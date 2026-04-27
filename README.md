@@ -1,5 +1,7 @@
 # mcp-server-wildberries
 
+mcp-name: io.github.dontsovcmc/wildberries
+
 MCP-сервер для **Wildberries Seller API** — товары, заказы, поставки, аналитика, реклама, финансы.
 
 200+ инструментов, покрывающих все разделы [WB API](https://dev.wildberries.ru/).
