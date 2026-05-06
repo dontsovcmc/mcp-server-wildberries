@@ -35,7 +35,9 @@ def _get_api():
         token = os.getenv("WB_TOKEN")
         if not token:
             raise RuntimeError("WB_TOKEN environment variable is required")
-        _api = WildberriesAPI(token)
+        timeout = int(os.getenv("WB_TIMEOUT", "30"))
+        file_timeout = int(os.getenv("WB_FILE_TIMEOUT", "60"))
+        _api = WildberriesAPI(token, timeout=timeout, file_timeout=file_timeout)
     return _api
 
 
