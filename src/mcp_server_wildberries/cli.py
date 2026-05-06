@@ -42,22 +42,6 @@ def main(argv: list[str] | None = None):
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = parser.add_subparsers(dest="command")
 
-    # ── Search & Execute ──────────────────────────────────────────────
-
-    p = sub.add_parser("search", help="Search available API actions")
-    p.add_argument("query", nargs="+")
-    p.add_argument("--domain", default="")
-    p.add_argument("--limit", type=int, default=10)
-
-    p = sub.add_parser("execute", help="Execute an action by ID")
-    p.add_argument("action_id")
-    p.add_argument("--params", default="{}")
-
-    p = sub.add_parser("execute-file", help="Execute a file download action")
-    p.add_argument("action_id")
-    p.add_argument("output_path")
-    p.add_argument("--params", default="{}")
-
     # ── General ────────────────────────────────────────────────────────
 
     sub.add_parser("ping", help="Check API availability")
@@ -785,22 +769,6 @@ def main(argv: list[str] | None = None):
     if not args.command:
         parser.print_help()
         sys.exit(1)
-
-    # Search & execute commands
-    if args.command == "search":
-        from .server import _search_actions
-        print(_j(_search_actions(" ".join(args.query), args.domain, args.limit)))
-        return
-
-    if args.command == "execute":
-        from .server import wb_execute
-        print(wb_execute(args.action_id, args.params))
-        return
-
-    if args.command == "execute-file":
-        from .server import wb_execute_file
-        print(wb_execute_file(args.action_id, args.output_path, args.params))
-        return
 
     api = _api()
 

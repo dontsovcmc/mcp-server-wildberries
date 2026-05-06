@@ -204,25 +204,20 @@ wb_search("download report", domain="reports")
 # MCP-сервер (по умолчанию, без аргументов)
 mcp-server-wildberries
 
-# Поиск действий
-mcp-server-wildberries search "остатки на складах"
+# Все доступные команды
+mcp-server-wildberries --help
 
-# Выполнение действия
-mcp-server-wildberries execute wb_ping
-mcp-server-wildberries execute wb_seller_info
+# Справка по конкретной команде
+mcp-server-wildberries fbs-orders --help
 
-# Выполнение с параметрами
-mcp-server-wildberries execute wb_fbs_order_cancel --params '{"order_id": 12345}'
-
-# Скачивание файла
-mcp-server-wildberries execute-file wb_analytics_csv_download report.csv \
-  --params '{"download_id": "abc"}'
-
-# Прямые команды
+# Примеры команд
 mcp-server-wildberries ping
 mcp-server-wildberries seller-info
 mcp-server-wildberries fbs-orders-new
 mcp-server-wildberries tariff-commissions
+mcp-server-wildberries fbs-orders --date-from 2025-01-01 --limit 10
+mcp-server-wildberries advert-campaign-rename 12345 "Новое название"
+mcp-server-wildberries analytics-csv-download dl_abc report.csv
 
 # Версия
 mcp-server-wildberries --version
@@ -231,15 +226,11 @@ mcp-server-wildberries --version
 ### Пример
 
 ```bash
-$ WB_TOKEN=ваш-токен mcp-server-wildberries execute wb_ping
+$ WB_TOKEN=ваш-токен mcp-server-wildberries ping
 {"TS": "2026-05-06T18:06:30Z", "Status": "OK"}
 
-$ WB_TOKEN=ваш-токен mcp-server-wildberries search "cancel order"
-[
-  {"id": "wb_fbs_order_cancel", "description": "Cancel FBS order", ...},
-  {"id": "wb_dbs_order_cancel", "description": "Cancel DBS order", ...},
-  ...
-]
+$ WB_TOKEN=ваш-токен mcp-server-wildberries seller-info
+{"name": "ИП Иванов И.И.", "sid": "...", "tradeMark": "MyBrand"}
 ```
 
 ## Разработка
