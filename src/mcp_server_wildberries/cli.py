@@ -5,10 +5,33 @@ Without arguments starts MCP server (stdio transport).
 """
 
 import argparse
+import json
 import sys
 
 from . import __version__
-from . import server
+
+
+def _j(data) -> str:
+    return json.dumps(data, ensure_ascii=False, indent=2)
+
+
+def _api():
+    import os
+    from .wb_api import WildberriesAPI
+
+    token = os.getenv("WB_TOKEN")
+    if not token:
+        print("Error: WB_TOKEN environment variable is required", file=sys.stderr)
+        sys.exit(1)
+    return WildberriesAPI(token)
+
+
+def _load_json(raw: str) -> dict | list:
+    try:
+        return json.loads(raw)
+    except (json.JSONDecodeError, TypeError) as exc:
+        print(f"Error: invalid JSON: {exc}", file=sys.stderr)
+        sys.exit(1)
 
 
 def main(argv: list[str] | None = None):
@@ -18,6 +41,22 @@ def main(argv: list[str] | None = None):
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = parser.add_subparsers(dest="command")
+
+    # ── Search & Execute ──────────────────────────────────────────────
+
+    p = sub.add_parser("search", help="Search available API actions")
+    p.add_argument("query", nargs="+")
+    p.add_argument("--domain", default="")
+    p.add_argument("--limit", type=int, default=10)
+
+    p = sub.add_parser("execute", help="Execute an action by ID")
+    p.add_argument("action_id")
+    p.add_argument("--params", default="{}")
+
+    p = sub.add_parser("execute-file", help="Execute a file download action")
+    p.add_argument("action_id")
+    p.add_argument("output_path")
+    p.add_argument("--params", default="{}")
 
     # ── General ────────────────────────────────────────────────────────
 
@@ -132,8 +171,6 @@ def main(argv: list[str] | None = None):
 
     sub.add_parser("fbs-reshipment-orders", help="Get FBS reshipment orders")
 
-    # ── FBS Order Metadata ─────────────────────────────────────────────
-
     p = sub.add_parser("fbs-order-meta", help="Get FBS order metadata")
     p.add_argument("order_ids_json")
 
@@ -164,8 +201,6 @@ def main(argv: list[str] | None = None):
     p.add_argument("order_id", type=int)
     p.add_argument("declaration")
 
-    # ── FBS Supplies ───────────────────────────────────────────────────
-
     p = sub.add_parser("fbs-supply-create", help="Create FBS supply")
     p.add_argument("--name", default="")
 
@@ -195,10 +230,7 @@ def main(argv: list[str] | None = None):
     p = sub.add_parser("fbs-supply-boxes", help="Get FBS supply boxes")
     p.add_argument("supply_id")
 
-    # ── FBS Passes ─────────────────────────────────────────────────────
-
     sub.add_parser("fbs-pass-offices", help="Get warehouses requiring access pass")
-
     sub.add_parser("fbs-passes", help="Get all access passes")
 
     p = sub.add_parser("fbs-pass-create", help="Create access pass")
@@ -214,7 +246,6 @@ def main(argv: list[str] | None = None):
     # ── DBW Orders ─────────────────────────────────────────────────────
 
     sub.add_parser("dbw-orders-new", help="Get new DBW assembly tasks")
-
     sub.add_parser("dbw-orders", help="Get completed DBW assembly tasks")
 
     p = sub.add_parser("dbw-delivery-date", help="Get DBW delivery dates")
@@ -266,7 +297,6 @@ def main(argv: list[str] | None = None):
     # ── DBS Orders ─────────────────────────────────────────────────────
 
     sub.add_parser("dbs-orders-new", help="Get new DBS orders")
-
     sub.add_parser("dbs-orders", help="Get completed DBS orders")
 
     p = sub.add_parser("dbs-groups-info", help="Get DBS paid delivery info")
@@ -308,19 +338,19 @@ def main(argv: list[str] | None = None):
     p = sub.add_parser("dbs-order-meta-delete", help="Delete DBS order metadata")
     p.add_argument("order_ids_json")
 
-    p = sub.add_parser("dbs-order-meta-sgtin", help="Set Honest Sign codes for DBS orders")
+    p = sub.add_parser("dbs-order-meta-sgtin", help="Set Honest Sign for DBS")
     p.add_argument("orders_json")
 
-    p = sub.add_parser("dbs-order-meta-uin", help="Set UIN for DBS orders")
+    p = sub.add_parser("dbs-order-meta-uin", help="Set UIN for DBS")
     p.add_argument("orders_json")
 
-    p = sub.add_parser("dbs-order-meta-imei", help="Set IMEI for DBS orders")
+    p = sub.add_parser("dbs-order-meta-imei", help="Set IMEI for DBS")
     p.add_argument("orders_json")
 
-    p = sub.add_parser("dbs-order-meta-gtin", help="Set GTIN for DBS orders")
+    p = sub.add_parser("dbs-order-meta-gtin", help="Set GTIN for DBS")
     p.add_argument("orders_json")
 
-    p = sub.add_parser("dbs-order-meta-customs", help="Set customs declarations for DBS orders")
+    p = sub.add_parser("dbs-order-meta-customs", help="Set customs for DBS")
     p.add_argument("orders_json")
 
     # ── Pickup Orders ──────────────────────────────────────────────────
@@ -336,7 +366,7 @@ def main(argv: list[str] | None = None):
     p = sub.add_parser("pickup-client", help="Get pickup client info")
     p.add_argument("order_ids_json")
 
-    p = sub.add_parser("pickup-verify-identity", help="Verify pickup order ownership")
+    p = sub.add_parser("pickup-verify-identity", help="Verify pickup ownership")
     p.add_argument("order_ids_json")
 
     p = sub.add_parser("pickup-order-receive", help="Confirm pickup receipt")
@@ -345,40 +375,39 @@ def main(argv: list[str] | None = None):
     p = sub.add_parser("pickup-order-reject", help="Record pickup rejection")
     p.add_argument("order_ids_json")
 
-    p = sub.add_parser("pickup-orders-status", help="Get pickup order statuses")
+    p = sub.add_parser("pickup-orders-status", help="Get pickup statuses")
     p.add_argument("order_ids_json")
 
-    sub.add_parser("pickup-orders-completed", help="Get completed pickup orders")
+    sub.add_parser("pickup-orders-completed", help="Get completed pickups")
 
     p = sub.add_parser("pickup-order-cancel", help="Cancel pickup order")
     p.add_argument("order_ids_json")
 
-    p = sub.add_parser("pickup-order-meta", help="Get pickup order metadata")
+    p = sub.add_parser("pickup-order-meta", help="Get pickup metadata")
     p.add_argument("order_ids_json")
 
-    p = sub.add_parser("pickup-order-meta-delete", help="Delete pickup order metadata")
+    p = sub.add_parser("pickup-order-meta-delete", help="Delete pickup metadata")
     p.add_argument("order_ids_json")
 
-    p = sub.add_parser("pickup-order-meta-sgtin", help="Set Honest Sign codes for pickup orders")
+    p = sub.add_parser("pickup-order-meta-sgtin", help="Set Honest Sign for pickup")
     p.add_argument("orders_json")
 
-    p = sub.add_parser("pickup-order-meta-uin", help="Set UIN for pickup orders")
+    p = sub.add_parser("pickup-order-meta-uin", help="Set UIN for pickup")
     p.add_argument("orders_json")
 
-    p = sub.add_parser("pickup-order-meta-imei", help="Set IMEI for pickup orders")
+    p = sub.add_parser("pickup-order-meta-imei", help="Set IMEI for pickup")
     p.add_argument("orders_json")
 
-    p = sub.add_parser("pickup-order-meta-gtin", help="Set GTIN for pickup orders")
+    p = sub.add_parser("pickup-order-meta-gtin", help="Set GTIN for pickup")
     p.add_argument("orders_json")
 
     # ── FBW Supplies ───────────────────────────────────────────────────
 
-    p = sub.add_parser("fbw-acceptance-options", help="Get FBW warehouse acceptance options")
+    p = sub.add_parser("fbw-acceptance-options", help="Get FBW acceptance options")
     p.add_argument("params_json")
 
-    sub.add_parser("fbw-warehouses", help="Get Wildberries warehouse list")
-
-    sub.add_parser("fbw-transit-tariffs", help="Get transit directions and tariffs")
+    sub.add_parser("fbw-warehouses", help="Get WB warehouse list")
+    sub.add_parser("fbw-transit-tariffs", help="Get transit tariffs")
 
     p = sub.add_parser("fbw-supplies", help="Get FBW supplies list")
     p.add_argument("--params-json", default="")
@@ -394,92 +423,91 @@ def main(argv: list[str] | None = None):
 
     # ── Advertising ────────────────────────────────────────────────────
 
-    sub.add_parser("advert-campaigns-count", help="Get advertising campaign counts by type")
+    sub.add_parser("advert-campaigns-count", help="Get campaign counts")
 
-    p = sub.add_parser("advert-campaigns", help="Get advertising campaign details")
+    p = sub.add_parser("advert-campaigns", help="Get campaign details")
     p.add_argument("campaign_ids_json")
 
-    p = sub.add_parser("advert-min-bids", help="Get minimum bid rates")
+    p = sub.add_parser("advert-min-bids", help="Get minimum bids")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-campaign-create", help="Create advertising campaign")
+    p = sub.add_parser("advert-campaign-create", help="Create campaign")
     p.add_argument("params_json")
 
-    sub.add_parser("advert-subjects", help="Get available categories for advertising")
+    sub.add_parser("advert-subjects", help="Get ad categories")
 
-    p = sub.add_parser("advert-nms", help="Get product cards for advertising")
+    p = sub.add_parser("advert-nms", help="Get product cards for ads")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-campaign-delete", help="Delete advertising campaign")
+    p = sub.add_parser("advert-campaign-delete", help="Delete campaign")
     p.add_argument("campaign_id", type=int)
 
-    p = sub.add_parser("advert-campaign-rename", help="Rename advertising campaign")
+    p = sub.add_parser("advert-campaign-rename", help="Rename campaign")
     p.add_argument("campaign_id", type=int)
     p.add_argument("name")
 
-    p = sub.add_parser("advert-campaign-start", help="Start advertising campaign")
+    p = sub.add_parser("advert-campaign-start", help="Start campaign")
     p.add_argument("campaign_id", type=int)
 
-    p = sub.add_parser("advert-campaign-pause", help="Pause advertising campaign")
+    p = sub.add_parser("advert-campaign-pause", help="Pause campaign")
     p.add_argument("campaign_id", type=int)
 
-    p = sub.add_parser("advert-campaign-stop", help="Stop advertising campaign")
+    p = sub.add_parser("advert-campaign-stop", help="Stop campaign")
     p.add_argument("campaign_id", type=int)
 
-    p = sub.add_parser("advert-placements-update", help="Update advertising placements")
+    p = sub.add_parser("advert-placements-update", help="Update placements")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-bids-update", help="Update advertising bids")
+    p = sub.add_parser("advert-bids-update", help="Update bids")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-nms-update", help="Manage product cards in campaign")
+    p = sub.add_parser("advert-nms-update", help="Manage cards in campaign")
     p.add_argument("params_json")
 
     p = sub.add_parser("advert-bid-recommendations", help="Get bid recommendations")
     p.add_argument("campaign_id", type=int)
 
-    p = sub.add_parser("advert-search-bids", help="Get search cluster bids")
+    p = sub.add_parser("advert-search-bids", help="Get search bids")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-search-bids-set", help="Set search cluster bids")
+    p = sub.add_parser("advert-search-bids-set", help="Set search bids")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-search-bids-delete", help="Delete search cluster bids")
+    p = sub.add_parser("advert-search-bids-delete", help="Delete search bids")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-minus-phrases", help="Get negative phrases")
+    p = sub.add_parser("advert-minus-phrases", help="Get minus phrases")
     p.add_argument("params_json")
 
-    p = sub.add_parser("advert-minus-phrases-set", help="Set negative phrases")
+    p = sub.add_parser("advert-minus-phrases-set", help="Set minus phrases")
     p.add_argument("params_json")
 
-    sub.add_parser("advert-balance", help="Get advertising account balance")
+    sub.add_parser("advert-balance", help="Get ad balance")
 
-    p = sub.add_parser("advert-budget", help="Get advertising campaign budget")
+    p = sub.add_parser("advert-budget", help="Get campaign budget")
     p.add_argument("campaign_id", type=int)
 
-    p = sub.add_parser("advert-budget-deposit", help="Replenish campaign budget")
+    p = sub.add_parser("advert-budget-deposit", help="Deposit budget")
     p.add_argument("campaign_id", type=int)
     p.add_argument("amount", type=int)
 
-    p = sub.add_parser("advert-cost-history", help="Get advertising cost history")
+    p = sub.add_parser("advert-cost-history", help="Get ad cost history")
     p.add_argument("--date-from", default="")
     p.add_argument("--date-to", default="")
 
-    p = sub.add_parser("advert-payments", help="Get advertising payment history")
+    p = sub.add_parser("advert-payments", help="Get ad payments")
     p.add_argument("--date-from", default="")
     p.add_argument("--date-to", default="")
 
-    p = sub.add_parser("advert-search-stats", help="Get search cluster statistics")
+    p = sub.add_parser("advert-search-stats", help="Get search stats")
     p.add_argument("params_json")
 
     # ── Communications ─────────────────────────────────────────────────
 
-    sub.add_parser("new-feedbacks-questions", help="Get count of unread questions and reviews")
+    sub.add_parser("new-feedbacks-questions", help="Get unread count")
+    sub.add_parser("questions-unanswered-count", help="Unanswered questions count")
 
-    sub.add_parser("questions-unanswered-count", help="Get count of unanswered questions")
-
-    p = sub.add_parser("questions-count", help="Get question count for period")
+    p = sub.add_parser("questions-count", help="Question count for period")
     p.add_argument("date_from")
     p.add_argument("date_to")
 
@@ -488,17 +516,17 @@ def main(argv: list[str] | None = None):
     p.add_argument("--take", type=int, default=100)
     p.add_argument("--skip", type=int, default=0)
 
-    p = sub.add_parser("question-manage", help="Manage question (answer, reject, view)")
+    p = sub.add_parser("question-manage", help="Manage question")
     p.add_argument("question_id")
     p.add_argument("action")
     p.add_argument("--answer", default="")
 
-    p = sub.add_parser("question", help="Get individual question")
+    p = sub.add_parser("question", help="Get question")
     p.add_argument("question_id")
 
-    sub.add_parser("feedbacks-unanswered-count", help="Get count of unprocessed reviews")
+    sub.add_parser("feedbacks-unanswered-count", help="Unprocessed reviews count")
 
-    p = sub.add_parser("feedbacks-count", help="Get review count for period")
+    p = sub.add_parser("feedbacks-count", help="Review count for period")
     p.add_argument("date_from")
     p.add_argument("date_to")
 
@@ -515,17 +543,17 @@ def main(argv: list[str] | None = None):
     p.add_argument("feedback_id")
     p.add_argument("text")
 
-    p = sub.add_parser("feedback-return", help="Request return for review")
+    p = sub.add_parser("feedback-return", help="Request return")
     p.add_argument("feedback_id")
 
-    p = sub.add_parser("feedback", help="Get individual review")
+    p = sub.add_parser("feedback", help="Get review")
     p.add_argument("feedback_id")
 
     p = sub.add_parser("feedbacks-archive", help="Get archived reviews")
     p.add_argument("--take", type=int, default=100)
     p.add_argument("--skip", type=int, default=0)
 
-    p = sub.add_parser("feedback-pins", help="Get pinned reviews for product")
+    p = sub.add_parser("feedback-pins", help="Get pinned reviews")
     p.add_argument("nm_id", type=int)
 
     p = sub.add_parser("feedback-pin", help="Pin review")
@@ -536,13 +564,12 @@ def main(argv: list[str] | None = None):
     p.add_argument("feedback_id")
     p.add_argument("nm_id", type=int)
 
-    p = sub.add_parser("feedback-pins-count", help="Get pinned review count for product")
+    p = sub.add_parser("feedback-pins-count", help="Pinned count")
     p.add_argument("nm_id", type=int)
 
-    sub.add_parser("feedback-pins-limits", help="Get pinning limits")
+    sub.add_parser("feedback-pins-limits", help="Pinning limits")
 
     sub.add_parser("chats", help="Get chats list")
-
     sub.add_parser("chat-events", help="Get chat events")
 
     p = sub.add_parser("chat-send", help="Send chat message")
@@ -551,68 +578,67 @@ def main(argv: list[str] | None = None):
 
     # ── Tariffs ────────────────────────────────────────────────────────
 
-    sub.add_parser("tariff-commissions", help="Get commission rates")
+    sub.add_parser("tariff-commissions", help="Get commissions")
 
-    p = sub.add_parser("tariff-box", help="Get box delivery tariffs")
+    p = sub.add_parser("tariff-box", help="Get box tariffs")
     p.add_argument("--date", default="")
 
     p = sub.add_parser("tariff-pallet", help="Get pallet tariffs")
     p.add_argument("--date", default="")
 
     sub.add_parser("tariff-acceptance", help="Get acceptance coefficients")
-
     sub.add_parser("tariff-return", help="Get return tariffs")
 
     # ── Analytics ──────────────────────────────────────────────────────
 
-    p = sub.add_parser("analytics-sales-funnel", help="Get product sales funnel")
+    p = sub.add_parser("analytics-sales-funnel", help="Sales funnel")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-sales-funnel-history", help="Get daily/weekly sales funnel history")
+    p = sub.add_parser("analytics-sales-funnel-history", help="Funnel history")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-sales-funnel-grouped", help="Get grouped sales funnel history")
+    p = sub.add_parser("analytics-sales-funnel-grouped", help="Grouped funnel")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-search-report", help="Get search queries report")
+    p = sub.add_parser("analytics-search-report", help="Search report")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-search-groups", help="Get search query groups")
+    p = sub.add_parser("analytics-search-groups", help="Search groups")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-search-details", help="Get search query details")
+    p = sub.add_parser("analytics-search-details", help="Search details")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-search-texts", help="Get search phrases for product")
+    p = sub.add_parser("analytics-search-texts", help="Search texts")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-search-orders", help="Get orders by search phrase")
+    p = sub.add_parser("analytics-search-orders", help="Orders by search")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-stocks-wb", help="Get WB warehouse stock data")
+    p = sub.add_parser("analytics-stocks-wb", help="WB warehouse stocks")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-stocks-groups", help="Get grouped inventory data")
+    p = sub.add_parser("analytics-stocks-groups", help="Grouped stocks")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-stocks-products", help="Get product inventory data")
+    p = sub.add_parser("analytics-stocks-products", help="Product stocks")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-stocks-sizes", help="Get inventory by size")
+    p = sub.add_parser("analytics-stocks-sizes", help="Stocks by size")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-stocks-offices", help="Get warehouse inventory data")
+    p = sub.add_parser("analytics-stocks-offices", help="Warehouse stocks")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-csv-create", help="Create analytics CSV report")
+    p = sub.add_parser("analytics-csv-create", help="Create CSV report")
     p.add_argument("params_json")
 
-    sub.add_parser("analytics-csv-list", help="Get list of analytics CSV reports")
+    sub.add_parser("analytics-csv-list", help="List CSV reports")
 
-    p = sub.add_parser("analytics-csv-retry", help="Retry CSV report generation")
+    p = sub.add_parser("analytics-csv-retry", help="Retry CSV report")
     p.add_argument("params_json")
 
-    p = sub.add_parser("analytics-csv-download", help="Download analytics CSV report")
+    p = sub.add_parser("analytics-csv-download", help="Download CSV report")
     p.add_argument("download_id")
     p.add_argument("output_path")
 
@@ -622,102 +648,93 @@ def main(argv: list[str] | None = None):
     p.add_argument("date_from")
     p.add_argument("--flag", type=int, default=0)
 
-    p = sub.add_parser("report-sales", help="Get sales and returns report")
+    p = sub.add_parser("report-sales", help="Get sales report")
     p.add_argument("date_from")
     p.add_argument("--flag", type=int, default=0)
 
-    sub.add_parser("report-warehouse-remains-create", help="Create warehouse remains report task")
+    sub.add_parser("report-warehouse-remains-create", help="Create remains report")
 
-    p = sub.add_parser("report-warehouse-remains-status", help="Check warehouse remains report status")
+    p = sub.add_parser("report-warehouse-remains-status", help="Check remains status")
     p.add_argument("task_id")
 
-    p = sub.add_parser("report-warehouse-remains-download", help="Download warehouse remains report")
+    p = sub.add_parser("report-warehouse-remains-download", help="Download remains")
     p.add_argument("task_id")
     p.add_argument("output_path")
 
-    p = sub.add_parser("report-excise", help="Get excise/marking report")
+    p = sub.add_parser("report-excise", help="Excise report")
     p.add_argument("params_json")
 
-    sub.add_parser("report-measurement-penalties", help="Get dimension measurement deductions")
+    sub.add_parser("report-measurement-penalties", help="Measurement deductions")
+    sub.add_parser("report-warehouse-measurements", help="Warehouse measurements")
+    sub.add_parser("report-deductions", help="Substitution deductions")
+    sub.add_parser("report-antifraud", help="Self-purchase deductions")
+    sub.add_parser("report-labeling", help="Marking penalties")
+    sub.add_parser("report-acceptance-create", help="Create acceptance report")
 
-    sub.add_parser("report-warehouse-measurements", help="Get warehouse measurement data")
-
-    sub.add_parser("report-deductions", help="Get substitution deductions")
-
-    sub.add_parser("report-antifraud", help="Get self-purchase deductions")
-
-    sub.add_parser("report-labeling", help="Get marking/labeling penalties")
-
-    sub.add_parser("report-acceptance-create", help="Create acceptance report task")
-
-    p = sub.add_parser("report-acceptance-status", help="Check acceptance report status")
+    p = sub.add_parser("report-acceptance-status", help="Check acceptance status")
     p.add_argument("task_id")
 
-    p = sub.add_parser("report-acceptance-download", help="Download acceptance report")
+    p = sub.add_parser("report-acceptance-download", help="Download acceptance")
     p.add_argument("task_id")
     p.add_argument("output_path")
 
-    sub.add_parser("report-paid-storage-create", help="Create paid storage report task")
+    sub.add_parser("report-paid-storage-create", help="Create storage report")
 
-    p = sub.add_parser("report-paid-storage-status", help="Check paid storage report status")
+    p = sub.add_parser("report-paid-storage-status", help="Check storage status")
     p.add_argument("task_id")
 
-    p = sub.add_parser("report-paid-storage-download", help="Download paid storage report")
+    p = sub.add_parser("report-paid-storage-download", help="Download storage")
     p.add_argument("task_id")
     p.add_argument("output_path")
 
-    sub.add_parser("report-regional-sales", help="Get regional sales report")
+    sub.add_parser("report-regional-sales", help="Regional sales report")
+    sub.add_parser("report-brands", help="Seller brands")
+    sub.add_parser("report-brand-categories", help="Brand categories")
 
-    sub.add_parser("report-brands", help="Get seller brands list")
-
-    sub.add_parser("report-brand-categories", help="Get parent categories for brand share")
-
-    p = sub.add_parser("report-brand-share", help="Get brand share report")
+    p = sub.add_parser("report-brand-share", help="Brand share report")
     p.add_argument("--params-json", default="")
 
-    sub.add_parser("report-blocked-products", help="Get blocked products")
-
-    sub.add_parser("report-shadowed-products", help="Get hidden/shadowed products")
-
-    sub.add_parser("report-returns", help="Get returns report")
+    sub.add_parser("report-blocked-products", help="Blocked products")
+    sub.add_parser("report-shadowed-products", help="Shadowed products")
+    sub.add_parser("report-returns", help="Returns report")
 
     # ── Finance ────────────────────────────────────────────────────────
 
-    sub.add_parser("finance-balance", help="Get seller account balance")
+    sub.add_parser("finance-balance", help="Get balance")
 
-    p = sub.add_parser("finance-sales-reports", help="Get sales reports list")
+    p = sub.add_parser("finance-sales-reports", help="Sales reports list")
     p.add_argument("params_json")
 
-    p = sub.add_parser("finance-sales-report-detail", help="Get detailed sales report")
+    p = sub.add_parser("finance-sales-report-detail", help="Sales report detail")
     p.add_argument("report_id", type=int)
 
-    p = sub.add_parser("finance-sales-report-by-period", help="Get sales report for period")
+    p = sub.add_parser("finance-sales-report-by-period", help="Sales by period")
     p.add_argument("params_json")
 
-    p = sub.add_parser("finance-report-detail-by-period", help="Get realization report")
+    p = sub.add_parser("finance-report-detail-by-period", help="Realization report")
     p.add_argument("date_from")
     p.add_argument("date_to")
     p.add_argument("--limit", type=int, default=100000)
 
-    p = sub.add_parser("finance-acquiring-reports", help="Get acquiring reports list")
+    p = sub.add_parser("finance-acquiring-reports", help="Acquiring reports")
     p.add_argument("params_json")
 
-    p = sub.add_parser("finance-acquiring-detail", help="Get detailed acquiring report")
+    p = sub.add_parser("finance-acquiring-detail", help="Acquiring detail")
     p.add_argument("report_id", type=int)
 
-    p = sub.add_parser("finance-acquiring-by-period", help="Get acquiring data for period")
+    p = sub.add_parser("finance-acquiring-by-period", help="Acquiring by period")
     p.add_argument("params_json")
 
-    sub.add_parser("finance-document-categories", help="Get document categories")
+    sub.add_parser("finance-document-categories", help="Document categories")
 
-    p = sub.add_parser("finance-documents", help="Get seller documents list")
+    p = sub.add_parser("finance-documents", help="Documents list")
     p.add_argument("--params-json", default="")
 
     p = sub.add_parser("finance-document-download", help="Download document")
     p.add_argument("doc_id")
     p.add_argument("output_path")
 
-    p = sub.add_parser("finance-documents-download", help="Download multiple documents")
+    p = sub.add_parser("finance-documents-download", help="Download documents")
     p.add_argument("doc_ids_json")
     p.add_argument("output_path")
 
@@ -731,13 +748,13 @@ def main(argv: list[str] | None = None):
     p.add_argument("offer_id")
     p.add_argument("keys_json")
 
-    p = sub.add_parser("wbd-keys-redeemed", help="Get redeemed activation keys")
+    p = sub.add_parser("wbd-keys-redeemed", help="Get redeemed keys")
     p.add_argument("offer_id")
 
-    p = sub.add_parser("wbd-keys-count", help="Get activation key count")
+    p = sub.add_parser("wbd-keys-count", help="Get key count")
     p.add_argument("offer_id")
 
-    p = sub.add_parser("wbd-keys-list", help="Get activation key list")
+    p = sub.add_parser("wbd-keys-list", help="Get keys list")
     p.add_argument("offer_id")
 
     p = sub.add_parser("wbd-offer-create", help="Create digital offer")
@@ -747,20 +764,20 @@ def main(argv: list[str] | None = None):
     p.add_argument("offer_id")
     p.add_argument("params_json")
 
-    p = sub.add_parser("wbd-offer", help="Get digital offer info")
+    p = sub.add_parser("wbd-offer", help="Get digital offer")
     p.add_argument("offer_id")
 
     sub.add_parser("wbd-offers", help="Get digital offers list")
 
-    p = sub.add_parser("wbd-offer-price", help="Update digital offer price")
+    p = sub.add_parser("wbd-offer-price", help="Update offer price")
     p.add_argument("offer_id")
     p.add_argument("price", type=int)
 
-    p = sub.add_parser("wbd-offer-status", help="Update digital offer status")
+    p = sub.add_parser("wbd-offer-status", help="Update offer status")
     p.add_argument("offer_id")
     p.add_argument("status")
 
-    sub.add_parser("wbd-catalog", help="Get WBD catalog categories")
+    sub.add_parser("wbd-catalog", help="Get WBD catalog")
 
     # ── Parse & dispatch ───────────────────────────────────────────────
 
@@ -769,259 +786,284 @@ def main(argv: list[str] | None = None):
         parser.print_help()
         sys.exit(1)
 
+    # Search & execute commands
+    if args.command == "search":
+        from .server import _search_actions
+        print(_j(_search_actions(" ".join(args.query), args.domain, args.limit)))
+        return
+
+    if args.command == "execute":
+        from .server import wb_execute
+        print(wb_execute(args.action_id, args.params))
+        return
+
+    if args.command == "execute-file":
+        from .server import wb_execute_file
+        print(wb_execute_file(args.action_id, args.output_path, args.params))
+        return
+
+    api = _api()
+
+    # File download helpers
+    def _download(data: bytes, path: str) -> str:
+        import os
+        with open(path, "wb") as f:
+            f.write(data)
+        return _j({"path": os.path.abspath(path), "size": len(data)})
+
     handlers = {
         # General
-        "ping": lambda: server.wb_ping(),
-        "news": lambda: server.wb_news(),
-        "seller-info": lambda: server.wb_seller_info(),
-        "seller-rating": lambda: server.wb_seller_rating(),
-        "subscriptions": lambda: server.wb_subscriptions(),
-        "user-invite": lambda: server.wb_user_invite(args.email, args.permissions_json),
-        "users": lambda: server.wb_users(),
-        "user-access-update": lambda: server.wb_user_access_update(args.user_id, args.permissions_json),
-        "user-delete": lambda: server.wb_user_delete(args.user_id),
+        "ping": lambda: _j(api.ping()),
+        "news": lambda: _j(api.get_news()),
+        "seller-info": lambda: _j(api.get_seller_info()),
+        "seller-rating": lambda: _j(api.get_seller_rating()),
+        "subscriptions": lambda: _j(api.get_subscriptions()),
+        "user-invite": lambda: _j(api.create_user_invite(args.email, _load_json(args.permissions_json))),
+        "users": lambda: _j(api.get_users()),
+        "user-access-update": lambda: _j(api.update_user_access(args.user_id, _load_json(args.permissions_json))),
+        "user-delete": lambda: _j(api.delete_user(args.user_id)),
         # Content
-        "content-parent-categories": lambda: server.wb_content_parent_categories(),
-        "content-subjects": lambda: server.wb_content_subjects(args.name, args.top, args.offset),
-        "content-characteristics": lambda: server.wb_content_characteristics(args.subject_id),
-        "content-colors": lambda: server.wb_content_colors(),
-        "content-kinds": lambda: server.wb_content_kinds(),
-        "content-countries": lambda: server.wb_content_countries(),
-        "content-seasons": lambda: server.wb_content_seasons(),
-        "content-vat": lambda: server.wb_content_vat(),
-        "content-tnved": lambda: server.wb_content_tnved(args.subject_id),
-        "content-brands": lambda: server.wb_content_brands(args.pattern),
-        "content-tags": lambda: server.wb_content_tags(),
-        "content-tag-create": lambda: server.wb_content_tag_create(args.name, args.color),
-        "content-tag-update": lambda: server.wb_content_tag_update(args.tag_id, args.name, args.color),
-        "content-tag-delete": lambda: server.wb_content_tag_delete(args.tag_id),
-        "content-tag-link": lambda: server.wb_content_tag_link(args.nm_ids_json, args.tag_id),
-        "content-cards-list": lambda: server.wb_content_cards_list(args.cursor_json, args.filter_json),
-        "content-cards-errors": lambda: server.wb_content_cards_errors(),
-        "content-cards-update": lambda: server.wb_content_cards_update(args.cards_json),
+        "content-parent-categories": lambda: _j(api.get_parent_categories()),
+        "content-subjects": lambda: _j(api.get_subjects(args.name, args.top, args.offset)),
+        "content-characteristics": lambda: _j(api.get_characteristics(args.subject_id)),
+        "content-colors": lambda: _j(api.get_colors()),
+        "content-kinds": lambda: _j(api.get_kinds()),
+        "content-countries": lambda: _j(api.get_countries()),
+        "content-seasons": lambda: _j(api.get_seasons()),
+        "content-vat": lambda: _j(api.get_vat()),
+        "content-tnved": lambda: _j(api.get_tnved(args.subject_id)),
+        "content-brands": lambda: _j(api.get_brands(args.pattern)),
+        "content-tags": lambda: _j(api.get_tags()),
+        "content-tag-create": lambda: _j(api.create_tag(args.name, args.color)),
+        "content-tag-update": lambda: _j(api.update_tag(args.tag_id, args.name, args.color)),
+        "content-tag-delete": lambda: _j(api.delete_tag(args.tag_id)),
+        "content-tag-link": lambda: _j(api.link_tags(_load_json(args.nm_ids_json), args.tag_id)),
+        "content-cards-list": lambda: _j(api.get_cards_list(
+            _load_json(args.cursor_json) if args.cursor_json else None,
+            _load_json(args.filter_json) if args.filter_json else None,
+        )),
+        "content-cards-errors": lambda: _j(api.get_cards_errors()),
+        "content-cards-update": lambda: _j(api.update_cards(_load_json(args.cards_json))),
         # FBS Orders
-        "fbs-orders-new": lambda: server.wb_fbs_orders_new(),
-        "fbs-orders": lambda: server.wb_fbs_orders(args.date_from, args.date_to, args.limit, args.next_val),
-        "fbs-orders-status": lambda: server.wb_fbs_orders_status(args.order_ids_json),
-        "fbs-order-cancel": lambda: server.wb_fbs_order_cancel(args.order_id),
-        "fbs-stickers": lambda: server.wb_fbs_stickers(args.order_ids_json, args.sticker_type, args.width, args.height),
-        "fbs-stickers-cross-border": lambda: server.wb_fbs_stickers_cross_border(args.order_ids_json),
-        "fbs-orders-status-history": lambda: server.wb_fbs_orders_status_history(args.order_ids_json),
-        "fbs-orders-client": lambda: server.wb_fbs_orders_client(args.order_ids_json),
-        "fbs-reshipment-orders": lambda: server.wb_fbs_reshipment_orders(),
-        # FBS Order Metadata
-        "fbs-order-meta": lambda: server.wb_fbs_order_meta(args.order_ids_json),
-        "fbs-order-meta-delete": lambda: server.wb_fbs_order_meta_delete(args.order_id),
-        "fbs-order-meta-sgtin": lambda: server.wb_fbs_order_meta_sgtin(args.order_id, args.sgtins_json),
-        "fbs-order-meta-uin": lambda: server.wb_fbs_order_meta_uin(args.order_id, args.uin),
-        "fbs-order-meta-imei": lambda: server.wb_fbs_order_meta_imei(args.order_id, args.imei),
-        "fbs-order-meta-gtin": lambda: server.wb_fbs_order_meta_gtin(args.order_id, args.gtin),
-        "fbs-order-meta-expiration": lambda: server.wb_fbs_order_meta_expiration(args.order_id, args.date),
-        "fbs-order-meta-customs": lambda: server.wb_fbs_order_meta_customs(args.order_id, args.declaration),
-        # FBS Supplies
-        "fbs-supply-create": lambda: server.wb_fbs_supply_create(args.name),
-        "fbs-supplies": lambda: server.wb_fbs_supplies(args.limit, args.next_val),
-        "fbs-supply-add-orders": lambda: server.wb_fbs_supply_add_orders(args.supply_id, args.order_ids_json),
-        "fbs-supply": lambda: server.wb_fbs_supply(args.supply_id),
-        "fbs-supply-delete": lambda: server.wb_fbs_supply_delete(args.supply_id),
-        "fbs-supply-orders": lambda: server.wb_fbs_supply_orders(args.supply_id),
-        "fbs-supply-deliver": lambda: server.wb_fbs_supply_deliver(args.supply_id),
-        "fbs-supply-barcode": lambda: server.wb_fbs_supply_barcode(args.supply_id),
-        "fbs-supply-boxes": lambda: server.wb_fbs_supply_boxes(args.supply_id),
-        # FBS Passes
-        "fbs-pass-offices": lambda: server.wb_fbs_pass_offices(),
-        "fbs-passes": lambda: server.wb_fbs_passes(),
-        "fbs-pass-create": lambda: server.wb_fbs_pass_create(args.params_json),
-        "fbs-pass-update": lambda: server.wb_fbs_pass_update(args.pass_id, args.params_json),
-        "fbs-pass-delete": lambda: server.wb_fbs_pass_delete(args.pass_id),
+        "fbs-orders-new": lambda: _j(api.get_fbs_orders_new()),
+        "fbs-orders": lambda: _j(api.get_fbs_orders(args.date_from, args.date_to, args.limit, args.next_val)),
+        "fbs-orders-status": lambda: _j(api.get_fbs_orders_status(_load_json(args.order_ids_json))),
+        "fbs-order-cancel": lambda: _j(api.cancel_fbs_order(args.order_id)),
+        "fbs-stickers": lambda: _j(api.get_fbs_stickers(_load_json(args.order_ids_json), args.sticker_type, args.width, args.height)),
+        "fbs-stickers-cross-border": lambda: _j(api.get_fbs_stickers_cross_border(_load_json(args.order_ids_json))),
+        "fbs-orders-status-history": lambda: _j(api.get_fbs_orders_status_history(_load_json(args.order_ids_json))),
+        "fbs-orders-client": lambda: _j(api.get_fbs_orders_client(_load_json(args.order_ids_json))),
+        "fbs-reshipment-orders": lambda: _j(api.get_fbs_reshipment_orders()),
+        "fbs-order-meta": lambda: _j(api.get_fbs_order_meta(_load_json(args.order_ids_json))),
+        "fbs-order-meta-delete": lambda: _j(api.delete_fbs_order_meta(args.order_id)),
+        "fbs-order-meta-sgtin": lambda: _j(api.set_fbs_order_sgtin(args.order_id, _load_json(args.sgtins_json))),
+        "fbs-order-meta-uin": lambda: _j(api.set_fbs_order_uin(args.order_id, args.uin)),
+        "fbs-order-meta-imei": lambda: _j(api.set_fbs_order_imei(args.order_id, args.imei)),
+        "fbs-order-meta-gtin": lambda: _j(api.set_fbs_order_gtin(args.order_id, args.gtin)),
+        "fbs-order-meta-expiration": lambda: _j(api.set_fbs_order_expiration(args.order_id, args.date)),
+        "fbs-order-meta-customs": lambda: _j(api.set_fbs_order_customs(args.order_id, args.declaration)),
+        "fbs-supply-create": lambda: _j(api.create_fbs_supply(args.name)),
+        "fbs-supplies": lambda: _j(api.get_fbs_supplies(args.limit, args.next_val)),
+        "fbs-supply-add-orders": lambda: _j(api.add_fbs_supply_orders(args.supply_id, _load_json(args.order_ids_json))),
+        "fbs-supply": lambda: _j(api.get_fbs_supply(args.supply_id)),
+        "fbs-supply-delete": lambda: _j(api.delete_fbs_supply(args.supply_id)),
+        "fbs-supply-orders": lambda: _j(api.get_fbs_supply_orders(args.supply_id)),
+        "fbs-supply-deliver": lambda: _j(api.deliver_fbs_supply(args.supply_id)),
+        "fbs-supply-barcode": lambda: _j(api.get_fbs_supply_barcode(args.supply_id)),
+        "fbs-supply-boxes": lambda: _j(api.get_fbs_supply_boxes(args.supply_id)),
+        "fbs-pass-offices": lambda: _j(api.get_fbs_pass_offices()),
+        "fbs-passes": lambda: _j(api.get_fbs_passes()),
+        "fbs-pass-create": lambda: _j(api.create_fbs_pass(_load_json(args.params_json))),
+        "fbs-pass-update": lambda: _j(api.update_fbs_pass(args.pass_id, _load_json(args.params_json))),
+        "fbs-pass-delete": lambda: _j(api.delete_fbs_pass(args.pass_id)),
         # DBW Orders
-        "dbw-orders-new": lambda: server.wb_dbw_orders_new(),
-        "dbw-orders": lambda: server.wb_dbw_orders(),
-        "dbw-delivery-date": lambda: server.wb_dbw_delivery_date(args.order_ids_json),
-        "dbw-client": lambda: server.wb_dbw_client(args.order_ids_json),
-        "dbw-orders-status": lambda: server.wb_dbw_orders_status(args.order_ids_json),
-        "dbw-order-confirm": lambda: server.wb_dbw_order_confirm(args.order_id),
-        "dbw-stickers": lambda: server.wb_dbw_stickers(args.order_ids_json),
-        "dbw-order-assemble": lambda: server.wb_dbw_order_assemble(args.order_id),
-        "dbw-courier": lambda: server.wb_dbw_courier(args.order_ids_json),
-        "dbw-order-cancel": lambda: server.wb_dbw_order_cancel(args.order_id),
-        "dbw-order-meta": lambda: server.wb_dbw_order_meta(args.order_id),
-        "dbw-order-meta-delete": lambda: server.wb_dbw_order_meta_delete(args.order_id),
-        "dbw-order-meta-sgtin": lambda: server.wb_dbw_order_meta_sgtin(args.order_id, args.sgtins_json),
-        "dbw-order-meta-uin": lambda: server.wb_dbw_order_meta_uin(args.order_id, args.uin),
-        "dbw-order-meta-imei": lambda: server.wb_dbw_order_meta_imei(args.order_id, args.imei),
-        "dbw-order-meta-gtin": lambda: server.wb_dbw_order_meta_gtin(args.order_id, args.gtin),
+        "dbw-orders-new": lambda: _j(api.get_dbw_orders_new()),
+        "dbw-orders": lambda: _j(api.get_dbw_orders()),
+        "dbw-delivery-date": lambda: _j(api.get_dbw_delivery_date(_load_json(args.order_ids_json))),
+        "dbw-client": lambda: _j(api.get_dbw_client(_load_json(args.order_ids_json))),
+        "dbw-orders-status": lambda: _j(api.get_dbw_orders_status(_load_json(args.order_ids_json))),
+        "dbw-order-confirm": lambda: _j(api.confirm_dbw_order(args.order_id)),
+        "dbw-stickers": lambda: _j(api.get_dbw_stickers(_load_json(args.order_ids_json))),
+        "dbw-order-assemble": lambda: _j(api.assemble_dbw_order(args.order_id)),
+        "dbw-courier": lambda: _j(api.get_dbw_courier(_load_json(args.order_ids_json))),
+        "dbw-order-cancel": lambda: _j(api.cancel_dbw_order(args.order_id)),
+        "dbw-order-meta": lambda: _j(api.get_dbw_order_meta(args.order_id)),
+        "dbw-order-meta-delete": lambda: _j(api.delete_dbw_order_meta(args.order_id)),
+        "dbw-order-meta-sgtin": lambda: _j(api.set_dbw_order_sgtin(args.order_id, _load_json(args.sgtins_json))),
+        "dbw-order-meta-uin": lambda: _j(api.set_dbw_order_uin(args.order_id, args.uin)),
+        "dbw-order-meta-imei": lambda: _j(api.set_dbw_order_imei(args.order_id, args.imei)),
+        "dbw-order-meta-gtin": lambda: _j(api.set_dbw_order_gtin(args.order_id, args.gtin)),
         # DBS Orders
-        "dbs-orders-new": lambda: server.wb_dbs_orders_new(),
-        "dbs-orders": lambda: server.wb_dbs_orders(),
-        "dbs-groups-info": lambda: server.wb_dbs_groups_info(args.order_ids_json),
-        "dbs-client": lambda: server.wb_dbs_client(args.order_ids_json),
-        "dbs-b2b-info": lambda: server.wb_dbs_b2b_info(args.order_ids_json),
-        "dbs-delivery-date": lambda: server.wb_dbs_delivery_date(args.order_ids_json),
-        "dbs-orders-status": lambda: server.wb_dbs_orders_status(args.order_ids_json),
-        "dbs-order-cancel": lambda: server.wb_dbs_order_cancel(args.order_ids_json),
-        "dbs-order-confirm": lambda: server.wb_dbs_order_confirm(args.order_ids_json),
-        "dbs-stickers": lambda: server.wb_dbs_stickers(args.order_ids_json),
-        "dbs-order-deliver": lambda: server.wb_dbs_order_deliver(args.order_ids_json),
-        "dbs-order-receive": lambda: server.wb_dbs_order_receive(args.order_ids_json),
-        "dbs-order-reject": lambda: server.wb_dbs_order_reject(args.order_ids_json),
-        "dbs-order-meta": lambda: server.wb_dbs_order_meta(args.order_ids_json),
-        "dbs-order-meta-delete": lambda: server.wb_dbs_order_meta_delete(args.order_ids_json),
-        "dbs-order-meta-sgtin": lambda: server.wb_dbs_order_meta_sgtin(args.orders_json),
-        "dbs-order-meta-uin": lambda: server.wb_dbs_order_meta_uin(args.orders_json),
-        "dbs-order-meta-imei": lambda: server.wb_dbs_order_meta_imei(args.orders_json),
-        "dbs-order-meta-gtin": lambda: server.wb_dbs_order_meta_gtin(args.orders_json),
-        "dbs-order-meta-customs": lambda: server.wb_dbs_order_meta_customs(args.orders_json),
-        # Pickup Orders
-        "pickup-orders-new": lambda: server.wb_pickup_orders_new(),
-        "pickup-order-confirm": lambda: server.wb_pickup_order_confirm(args.order_ids_json),
-        "pickup-order-prepare": lambda: server.wb_pickup_order_prepare(args.order_ids_json),
-        "pickup-client": lambda: server.wb_pickup_client(args.order_ids_json),
-        "pickup-verify-identity": lambda: server.wb_pickup_verify_identity(args.order_ids_json),
-        "pickup-order-receive": lambda: server.wb_pickup_order_receive(args.order_ids_json),
-        "pickup-order-reject": lambda: server.wb_pickup_order_reject(args.order_ids_json),
-        "pickup-orders-status": lambda: server.wb_pickup_orders_status(args.order_ids_json),
-        "pickup-orders-completed": lambda: server.wb_pickup_orders_completed(),
-        "pickup-order-cancel": lambda: server.wb_pickup_order_cancel(args.order_ids_json),
-        "pickup-order-meta": lambda: server.wb_pickup_order_meta(args.order_ids_json),
-        "pickup-order-meta-delete": lambda: server.wb_pickup_order_meta_delete(args.order_ids_json),
-        "pickup-order-meta-sgtin": lambda: server.wb_pickup_order_meta_sgtin(args.orders_json),
-        "pickup-order-meta-uin": lambda: server.wb_pickup_order_meta_uin(args.orders_json),
-        "pickup-order-meta-imei": lambda: server.wb_pickup_order_meta_imei(args.orders_json),
-        "pickup-order-meta-gtin": lambda: server.wb_pickup_order_meta_gtin(args.orders_json),
-        # FBW Supplies
-        "fbw-acceptance-options": lambda: server.wb_fbw_acceptance_options(args.params_json),
-        "fbw-warehouses": lambda: server.wb_fbw_warehouses(),
-        "fbw-transit-tariffs": lambda: server.wb_fbw_transit_tariffs(),
-        "fbw-supplies": lambda: server.wb_fbw_supplies(args.params_json),
-        "fbw-supply": lambda: server.wb_fbw_supply(args.supply_id),
-        "fbw-supply-goods": lambda: server.wb_fbw_supply_goods(args.supply_id),
-        "fbw-supply-package": lambda: server.wb_fbw_supply_package(args.supply_id),
+        "dbs-orders-new": lambda: _j(api.get_dbs_orders_new()),
+        "dbs-orders": lambda: _j(api.get_dbs_orders()),
+        "dbs-groups-info": lambda: _j(api.get_dbs_groups_info(_load_json(args.order_ids_json))),
+        "dbs-client": lambda: _j(api.get_dbs_client(_load_json(args.order_ids_json))),
+        "dbs-b2b-info": lambda: _j(api.get_dbs_b2b_info(_load_json(args.order_ids_json))),
+        "dbs-delivery-date": lambda: _j(api.get_dbs_delivery_date(_load_json(args.order_ids_json))),
+        "dbs-orders-status": lambda: _j(api.get_dbs_orders_status(_load_json(args.order_ids_json))),
+        "dbs-order-cancel": lambda: _j(api.cancel_dbs_order(_load_json(args.order_ids_json))),
+        "dbs-order-confirm": lambda: _j(api.confirm_dbs_order(_load_json(args.order_ids_json))),
+        "dbs-stickers": lambda: _j(api.get_dbs_stickers(_load_json(args.order_ids_json))),
+        "dbs-order-deliver": lambda: _j(api.deliver_dbs_order(_load_json(args.order_ids_json))),
+        "dbs-order-receive": lambda: _j(api.receive_dbs_order(_load_json(args.order_ids_json))),
+        "dbs-order-reject": lambda: _j(api.reject_dbs_order(_load_json(args.order_ids_json))),
+        "dbs-order-meta": lambda: _j(api.get_dbs_order_meta(_load_json(args.order_ids_json))),
+        "dbs-order-meta-delete": lambda: _j(api.delete_dbs_order_meta(_load_json(args.order_ids_json))),
+        "dbs-order-meta-sgtin": lambda: _j(api.set_dbs_order_sgtin(_load_json(args.orders_json))),
+        "dbs-order-meta-uin": lambda: _j(api.set_dbs_order_uin(_load_json(args.orders_json))),
+        "dbs-order-meta-imei": lambda: _j(api.set_dbs_order_imei(_load_json(args.orders_json))),
+        "dbs-order-meta-gtin": lambda: _j(api.set_dbs_order_gtin(_load_json(args.orders_json))),
+        "dbs-order-meta-customs": lambda: _j(api.set_dbs_order_customs(_load_json(args.orders_json))),
+        # Pickup
+        "pickup-orders-new": lambda: _j(api.get_pickup_orders_new()),
+        "pickup-order-confirm": lambda: _j(api.confirm_pickup_order(_load_json(args.order_ids_json))),
+        "pickup-order-prepare": lambda: _j(api.prepare_pickup_order(_load_json(args.order_ids_json))),
+        "pickup-client": lambda: _j(api.get_pickup_client(_load_json(args.order_ids_json))),
+        "pickup-verify-identity": lambda: _j(api.verify_pickup_identity(_load_json(args.order_ids_json))),
+        "pickup-order-receive": lambda: _j(api.receive_pickup_order(_load_json(args.order_ids_json))),
+        "pickup-order-reject": lambda: _j(api.reject_pickup_order(_load_json(args.order_ids_json))),
+        "pickup-orders-status": lambda: _j(api.get_pickup_orders_status(_load_json(args.order_ids_json))),
+        "pickup-orders-completed": lambda: _j(api.get_pickup_orders_completed()),
+        "pickup-order-cancel": lambda: _j(api.cancel_pickup_order(_load_json(args.order_ids_json))),
+        "pickup-order-meta": lambda: _j(api.get_pickup_order_meta(_load_json(args.order_ids_json))),
+        "pickup-order-meta-delete": lambda: _j(api.delete_pickup_order_meta(_load_json(args.order_ids_json))),
+        "pickup-order-meta-sgtin": lambda: _j(api.set_pickup_order_sgtin(_load_json(args.orders_json))),
+        "pickup-order-meta-uin": lambda: _j(api.set_pickup_order_uin(_load_json(args.orders_json))),
+        "pickup-order-meta-imei": lambda: _j(api.set_pickup_order_imei(_load_json(args.orders_json))),
+        "pickup-order-meta-gtin": lambda: _j(api.set_pickup_order_gtin(_load_json(args.orders_json))),
+        # FBW
+        "fbw-acceptance-options": lambda: _j(api.get_fbw_acceptance_options(_load_json(args.params_json))),
+        "fbw-warehouses": lambda: _j(api.get_fbw_warehouses()),
+        "fbw-transit-tariffs": lambda: _j(api.get_fbw_transit_tariffs()),
+        "fbw-supplies": lambda: _j(api.get_fbw_supplies(_load_json(args.params_json) if args.params_json else None)),
+        "fbw-supply": lambda: _j(api.get_fbw_supply(args.supply_id)),
+        "fbw-supply-goods": lambda: _j(api.get_fbw_supply_goods(args.supply_id)),
+        "fbw-supply-package": lambda: _j(api.get_fbw_supply_package(args.supply_id)),
         # Advertising
-        "advert-campaigns-count": lambda: server.wb_advert_campaigns_count(),
-        "advert-campaigns": lambda: server.wb_advert_campaigns(args.campaign_ids_json),
-        "advert-min-bids": lambda: server.wb_advert_min_bids(args.params_json),
-        "advert-campaign-create": lambda: server.wb_advert_campaign_create(args.params_json),
-        "advert-subjects": lambda: server.wb_advert_subjects(),
-        "advert-nms": lambda: server.wb_advert_nms(args.params_json),
-        "advert-campaign-delete": lambda: server.wb_advert_campaign_delete(args.campaign_id),
-        "advert-campaign-rename": lambda: server.wb_advert_campaign_rename(args.campaign_id, args.name),
-        "advert-campaign-start": lambda: server.wb_advert_campaign_start(args.campaign_id),
-        "advert-campaign-pause": lambda: server.wb_advert_campaign_pause(args.campaign_id),
-        "advert-campaign-stop": lambda: server.wb_advert_campaign_stop(args.campaign_id),
-        "advert-placements-update": lambda: server.wb_advert_placements_update(args.params_json),
-        "advert-bids-update": lambda: server.wb_advert_bids_update(args.params_json),
-        "advert-nms-update": lambda: server.wb_advert_nms_update(args.params_json),
-        "advert-bid-recommendations": lambda: server.wb_advert_bid_recommendations(args.campaign_id),
-        "advert-search-bids": lambda: server.wb_advert_search_bids(args.params_json),
-        "advert-search-bids-set": lambda: server.wb_advert_search_bids_set(args.params_json),
-        "advert-search-bids-delete": lambda: server.wb_advert_search_bids_delete(args.params_json),
-        "advert-minus-phrases": lambda: server.wb_advert_minus_phrases(args.params_json),
-        "advert-minus-phrases-set": lambda: server.wb_advert_minus_phrases_set(args.params_json),
-        "advert-balance": lambda: server.wb_advert_balance(),
-        "advert-budget": lambda: server.wb_advert_budget(args.campaign_id),
-        "advert-budget-deposit": lambda: server.wb_advert_budget_deposit(args.campaign_id, args.amount),
-        "advert-cost-history": lambda: server.wb_advert_cost_history(args.date_from, args.date_to),
-        "advert-payments": lambda: server.wb_advert_payments(args.date_from, args.date_to),
-        "advert-search-stats": lambda: server.wb_advert_search_stats(args.params_json),
+        "advert-campaigns-count": lambda: _j(api.get_advert_campaigns_count()),
+        "advert-campaigns": lambda: _j(api.get_advert_campaigns(_load_json(args.campaign_ids_json))),
+        "advert-min-bids": lambda: _j(api.get_advert_min_bids(_load_json(args.params_json))),
+        "advert-campaign-create": lambda: _j(api.create_advert_campaign(_load_json(args.params_json))),
+        "advert-subjects": lambda: _j(api.get_advert_subjects()),
+        "advert-nms": lambda: _j(api.get_advert_nms(_load_json(args.params_json))),
+        "advert-campaign-delete": lambda: _j(api.delete_advert_campaign(args.campaign_id)),
+        "advert-campaign-rename": lambda: _j(api.rename_advert_campaign(args.campaign_id, args.name)),
+        "advert-campaign-start": lambda: _j(api.start_advert_campaign(args.campaign_id)),
+        "advert-campaign-pause": lambda: _j(api.pause_advert_campaign(args.campaign_id)),
+        "advert-campaign-stop": lambda: _j(api.stop_advert_campaign(args.campaign_id)),
+        "advert-placements-update": lambda: _j(api.update_advert_placements(_load_json(args.params_json))),
+        "advert-bids-update": lambda: _j(api.update_advert_bids(_load_json(args.params_json))),
+        "advert-nms-update": lambda: _j(api.update_advert_nms(_load_json(args.params_json))),
+        "advert-bid-recommendations": lambda: _j(api.get_advert_bid_recommendations(args.campaign_id)),
+        "advert-search-bids": lambda: _j(api.get_advert_search_bids(_load_json(args.params_json))),
+        "advert-search-bids-set": lambda: _j(api.set_advert_search_bids(_load_json(args.params_json))),
+        "advert-search-bids-delete": lambda: _j(api.delete_advert_search_bids(_load_json(args.params_json))),
+        "advert-minus-phrases": lambda: _j(api.get_advert_minus_phrases(_load_json(args.params_json))),
+        "advert-minus-phrases-set": lambda: _j(api.set_advert_minus_phrases(_load_json(args.params_json))),
+        "advert-balance": lambda: _j(api.get_advert_balance()),
+        "advert-budget": lambda: _j(api.get_advert_budget(args.campaign_id)),
+        "advert-budget-deposit": lambda: _j(api.deposit_advert_budget(args.campaign_id, args.amount)),
+        "advert-cost-history": lambda: _j(api.get_advert_cost_history(args.date_from, args.date_to)),
+        "advert-payments": lambda: _j(api.get_advert_payments(args.date_from, args.date_to)),
+        "advert-search-stats": lambda: _j(api.get_advert_search_stats(_load_json(args.params_json))),
         # Communications
-        "new-feedbacks-questions": lambda: server.wb_new_feedbacks_questions(),
-        "questions-unanswered-count": lambda: server.wb_questions_unanswered_count(),
-        "questions-count": lambda: server.wb_questions_count(args.date_from, args.date_to),
-        "questions": lambda: server.wb_questions(args.is_answered, args.take, args.skip),
-        "question-manage": lambda: server.wb_question_manage(args.question_id, args.action, args.answer),
-        "question": lambda: server.wb_question(args.question_id),
-        "feedbacks-unanswered-count": lambda: server.wb_feedbacks_unanswered_count(),
-        "feedbacks-count": lambda: server.wb_feedbacks_count(args.date_from, args.date_to),
-        "feedbacks": lambda: server.wb_feedbacks(args.is_answered, args.take, args.skip),
-        "feedback-answer": lambda: server.wb_feedback_answer(args.feedback_id, args.text),
-        "feedback-answer-edit": lambda: server.wb_feedback_answer_edit(args.feedback_id, args.text),
-        "feedback-return": lambda: server.wb_feedback_return(args.feedback_id),
-        "feedback": lambda: server.wb_feedback(args.feedback_id),
-        "feedbacks-archive": lambda: server.wb_feedbacks_archive(args.take, args.skip),
-        "feedback-pins": lambda: server.wb_feedback_pins(args.nm_id),
-        "feedback-pin": lambda: server.wb_feedback_pin(args.feedback_id, args.nm_id),
-        "feedback-unpin": lambda: server.wb_feedback_unpin(args.feedback_id, args.nm_id),
-        "feedback-pins-count": lambda: server.wb_feedback_pins_count(args.nm_id),
-        "feedback-pins-limits": lambda: server.wb_feedback_pins_limits(),
-        "chats": lambda: server.wb_chats(),
-        "chat-events": lambda: server.wb_chat_events(),
-        "chat-send": lambda: server.wb_chat_send(args.chat_id, args.text),
+        "new-feedbacks-questions": lambda: _j(api.get_new_feedbacks_questions()),
+        "questions-unanswered-count": lambda: _j(api.get_unanswered_questions_count()),
+        "questions-count": lambda: _j(api.get_questions_count(args.date_from, args.date_to)),
+        "questions": lambda: _j(api.get_questions(args.is_answered, args.take, args.skip)),
+        "question-manage": lambda: _j(api.manage_question(args.question_id, args.action, args.answer)),
+        "question": lambda: _j(api.get_question(args.question_id)),
+        "feedbacks-unanswered-count": lambda: _j(api.get_unanswered_feedbacks_count()),
+        "feedbacks-count": lambda: _j(api.get_feedbacks_count(args.date_from, args.date_to)),
+        "feedbacks": lambda: _j(api.get_feedbacks(args.is_answered, args.take, args.skip)),
+        "feedback-answer": lambda: _j(api.answer_feedback(args.feedback_id, args.text)),
+        "feedback-answer-edit": lambda: _j(api.edit_feedback_answer(args.feedback_id, args.text)),
+        "feedback-return": lambda: _j(api.request_feedback_return(args.feedback_id)),
+        "feedback": lambda: _j(api.get_feedback(args.feedback_id)),
+        "feedbacks-archive": lambda: _j(api.get_feedbacks_archive(args.take, args.skip)),
+        "feedback-pins": lambda: _j(api.get_pinned_feedbacks(args.nm_id)),
+        "feedback-pin": lambda: _j(api.pin_feedback(args.feedback_id, args.nm_id)),
+        "feedback-unpin": lambda: _j(api.unpin_feedback(args.feedback_id, args.nm_id)),
+        "feedback-pins-count": lambda: _j(api.get_pinned_feedbacks_count(args.nm_id)),
+        "feedback-pins-limits": lambda: _j(api.get_pinned_feedbacks_limits()),
+        "chats": lambda: _j(api.get_chats()),
+        "chat-events": lambda: _j(api.get_chat_events()),
+        "chat-send": lambda: _j(api.send_chat_message(args.chat_id, args.text)),
         # Tariffs
-        "tariff-commissions": lambda: server.wb_tariff_commissions(),
-        "tariff-box": lambda: server.wb_tariff_box(args.date),
-        "tariff-pallet": lambda: server.wb_tariff_pallet(args.date),
-        "tariff-acceptance": lambda: server.wb_tariff_acceptance(),
-        "tariff-return": lambda: server.wb_tariff_return(),
+        "tariff-commissions": lambda: _j(api.get_tariff_commissions()),
+        "tariff-box": lambda: _j(api.get_tariff_box(args.date)),
+        "tariff-pallet": lambda: _j(api.get_tariff_pallet(args.date)),
+        "tariff-acceptance": lambda: _j(api.get_tariff_acceptance()),
+        "tariff-return": lambda: _j(api.get_tariff_return()),
         # Analytics
-        "analytics-sales-funnel": lambda: server.wb_analytics_sales_funnel(args.params_json),
-        "analytics-sales-funnel-history": lambda: server.wb_analytics_sales_funnel_history(args.params_json),
-        "analytics-sales-funnel-grouped": lambda: server.wb_analytics_sales_funnel_grouped(args.params_json),
-        "analytics-search-report": lambda: server.wb_analytics_search_report(args.params_json),
-        "analytics-search-groups": lambda: server.wb_analytics_search_groups(args.params_json),
-        "analytics-search-details": lambda: server.wb_analytics_search_details(args.params_json),
-        "analytics-search-texts": lambda: server.wb_analytics_search_texts(args.params_json),
-        "analytics-search-orders": lambda: server.wb_analytics_search_orders(args.params_json),
-        "analytics-stocks-wb": lambda: server.wb_analytics_stocks_wb(args.params_json),
-        "analytics-stocks-groups": lambda: server.wb_analytics_stocks_groups(args.params_json),
-        "analytics-stocks-products": lambda: server.wb_analytics_stocks_products(args.params_json),
-        "analytics-stocks-sizes": lambda: server.wb_analytics_stocks_sizes(args.params_json),
-        "analytics-stocks-offices": lambda: server.wb_analytics_stocks_offices(args.params_json),
-        "analytics-csv-create": lambda: server.wb_analytics_csv_create(args.params_json),
-        "analytics-csv-list": lambda: server.wb_analytics_csv_list(),
-        "analytics-csv-retry": lambda: server.wb_analytics_csv_retry(args.params_json),
-        "analytics-csv-download": lambda: server.wb_analytics_csv_download(args.download_id, args.output_path),
+        "analytics-sales-funnel": lambda: _j(api.get_analytics_sales_funnel(_load_json(args.params_json))),
+        "analytics-sales-funnel-history": lambda: _j(api.get_analytics_sales_funnel_history(_load_json(args.params_json))),
+        "analytics-sales-funnel-grouped": lambda: _j(api.get_analytics_sales_funnel_grouped(_load_json(args.params_json))),
+        "analytics-search-report": lambda: _j(api.get_analytics_search_report(_load_json(args.params_json))),
+        "analytics-search-groups": lambda: _j(api.get_analytics_search_groups(_load_json(args.params_json))),
+        "analytics-search-details": lambda: _j(api.get_analytics_search_details(_load_json(args.params_json))),
+        "analytics-search-texts": lambda: _j(api.get_analytics_search_texts(_load_json(args.params_json))),
+        "analytics-search-orders": lambda: _j(api.get_analytics_search_orders(_load_json(args.params_json))),
+        "analytics-stocks-wb": lambda: _j(api.get_analytics_stocks_wb(_load_json(args.params_json))),
+        "analytics-stocks-groups": lambda: _j(api.get_analytics_stocks_products_groups(_load_json(args.params_json))),
+        "analytics-stocks-products": lambda: _j(api.get_analytics_stocks_products(_load_json(args.params_json))),
+        "analytics-stocks-sizes": lambda: _j(api.get_analytics_stocks_sizes(_load_json(args.params_json))),
+        "analytics-stocks-offices": lambda: _j(api.get_analytics_stocks_offices(_load_json(args.params_json))),
+        "analytics-csv-create": lambda: _j(api.create_analytics_csv_report(_load_json(args.params_json))),
+        "analytics-csv-list": lambda: _j(api.get_analytics_csv_reports()),
+        "analytics-csv-retry": lambda: _j(api.retry_analytics_csv_report(_load_json(args.params_json))),
+        "analytics-csv-download": lambda: _download(api.download_analytics_csv_report(args.download_id), args.output_path),
         # Reports
-        "report-orders": lambda: server.wb_report_orders(args.date_from, args.flag),
-        "report-sales": lambda: server.wb_report_sales(args.date_from, args.flag),
-        "report-warehouse-remains-create": lambda: server.wb_report_warehouse_remains_create(),
-        "report-warehouse-remains-status": lambda: server.wb_report_warehouse_remains_status(args.task_id),
-        "report-warehouse-remains-download": lambda: server.wb_report_warehouse_remains_download(args.task_id, args.output_path),
-        "report-excise": lambda: server.wb_report_excise(args.params_json),
-        "report-measurement-penalties": lambda: server.wb_report_measurement_penalties(),
-        "report-warehouse-measurements": lambda: server.wb_report_warehouse_measurements(),
-        "report-deductions": lambda: server.wb_report_deductions(),
-        "report-antifraud": lambda: server.wb_report_antifraud(),
-        "report-labeling": lambda: server.wb_report_labeling(),
-        "report-acceptance-create": lambda: server.wb_report_acceptance_create(),
-        "report-acceptance-status": lambda: server.wb_report_acceptance_status(args.task_id),
-        "report-acceptance-download": lambda: server.wb_report_acceptance_download(args.task_id, args.output_path),
-        "report-paid-storage-create": lambda: server.wb_report_paid_storage_create(),
-        "report-paid-storage-status": lambda: server.wb_report_paid_storage_status(args.task_id),
-        "report-paid-storage-download": lambda: server.wb_report_paid_storage_download(args.task_id, args.output_path),
-        "report-regional-sales": lambda: server.wb_report_regional_sales(),
-        "report-brands": lambda: server.wb_report_brands(),
-        "report-brand-categories": lambda: server.wb_report_brand_categories(),
-        "report-brand-share": lambda: server.wb_report_brand_share(args.params_json),
-        "report-blocked-products": lambda: server.wb_report_blocked_products(),
-        "report-shadowed-products": lambda: server.wb_report_shadowed_products(),
-        "report-returns": lambda: server.wb_report_returns(),
+        "report-orders": lambda: _j(api.get_report_orders(args.date_from, args.flag)),
+        "report-sales": lambda: _j(api.get_report_sales(args.date_from, args.flag)),
+        "report-warehouse-remains-create": lambda: _j(api.create_report_warehouse_remains()),
+        "report-warehouse-remains-status": lambda: _j(api.get_report_warehouse_remains_status(args.task_id)),
+        "report-warehouse-remains-download": lambda: _download(api.download_report_warehouse_remains(args.task_id), args.output_path),
+        "report-excise": lambda: _j(api.get_report_excise(_load_json(args.params_json))),
+        "report-measurement-penalties": lambda: _j(api.get_report_measurement_penalties()),
+        "report-warehouse-measurements": lambda: _j(api.get_report_warehouse_measurements()),
+        "report-deductions": lambda: _j(api.get_report_deductions()),
+        "report-antifraud": lambda: _j(api.get_report_antifraud()),
+        "report-labeling": lambda: _j(api.get_report_labeling()),
+        "report-acceptance-create": lambda: _j(api.create_report_acceptance()),
+        "report-acceptance-status": lambda: _j(api.get_report_acceptance_status(args.task_id)),
+        "report-acceptance-download": lambda: _download(api.download_report_acceptance(args.task_id), args.output_path),
+        "report-paid-storage-create": lambda: _j(api.create_report_paid_storage()),
+        "report-paid-storage-status": lambda: _j(api.get_report_paid_storage_status(args.task_id)),
+        "report-paid-storage-download": lambda: _download(api.download_report_paid_storage(args.task_id), args.output_path),
+        "report-regional-sales": lambda: _j(api.get_report_regional_sales()),
+        "report-brands": lambda: _j(api.get_report_brands()),
+        "report-brand-categories": lambda: _j(api.get_report_brand_categories()),
+        "report-brand-share": lambda: _j(api.get_report_brand_share(_load_json(args.params_json) if args.params_json else None)),
+        "report-blocked-products": lambda: _j(api.get_report_blocked_products()),
+        "report-shadowed-products": lambda: _j(api.get_report_shadowed_products()),
+        "report-returns": lambda: _j(api.get_report_returns()),
         # Finance
-        "finance-balance": lambda: server.wb_finance_balance(),
-        "finance-sales-reports": lambda: server.wb_finance_sales_reports(args.params_json),
-        "finance-sales-report-detail": lambda: server.wb_finance_sales_report_detail(args.report_id),
-        "finance-sales-report-by-period": lambda: server.wb_finance_sales_report_by_period(args.params_json),
-        "finance-report-detail-by-period": lambda: server.wb_finance_report_detail_by_period(args.date_from, args.date_to, args.limit),
-        "finance-acquiring-reports": lambda: server.wb_finance_acquiring_reports(args.params_json),
-        "finance-acquiring-detail": lambda: server.wb_finance_acquiring_detail(args.report_id),
-        "finance-acquiring-by-period": lambda: server.wb_finance_acquiring_by_period(args.params_json),
-        "finance-document-categories": lambda: server.wb_finance_document_categories(),
-        "finance-documents": lambda: server.wb_finance_documents(args.params_json),
-        "finance-document-download": lambda: server.wb_finance_document_download(args.doc_id, args.output_path),
-        "finance-documents-download": lambda: server.wb_finance_documents_download(args.doc_ids_json, args.output_path),
-        # WBD (Digital)
-        "wbd-keys-add": lambda: server.wb_wbd_keys_add(args.offer_id, args.keys_json),
-        "wbd-keys-delete": lambda: server.wb_wbd_keys_delete(args.offer_id, args.keys_json),
-        "wbd-keys-redeemed": lambda: server.wb_wbd_keys_redeemed(args.offer_id),
-        "wbd-keys-count": lambda: server.wb_wbd_keys_count(args.offer_id),
-        "wbd-keys-list": lambda: server.wb_wbd_keys_list(args.offer_id),
-        "wbd-offer-create": lambda: server.wb_wbd_offer_create(args.params_json),
-        "wbd-offer-update": lambda: server.wb_wbd_offer_update(args.offer_id, args.params_json),
-        "wbd-offer": lambda: server.wb_wbd_offer(args.offer_id),
-        "wbd-offers": lambda: server.wb_wbd_offers(),
-        "wbd-offer-price": lambda: server.wb_wbd_offer_price(args.offer_id, args.price),
-        "wbd-offer-status": lambda: server.wb_wbd_offer_status(args.offer_id, args.status),
-        "wbd-catalog": lambda: server.wb_wbd_catalog(),
+        "finance-balance": lambda: _j(api.get_finance_balance()),
+        "finance-sales-reports": lambda: _j(api.get_finance_sales_reports(_load_json(args.params_json))),
+        "finance-sales-report-detail": lambda: _j(api.get_finance_sales_report_detail(args.report_id)),
+        "finance-sales-report-by-period": lambda: _j(api.get_finance_sales_report_by_period(_load_json(args.params_json))),
+        "finance-report-detail-by-period": lambda: _j(api.get_finance_report_detail_by_period(args.date_from, args.date_to, args.limit)),
+        "finance-acquiring-reports": lambda: _j(api.get_finance_acquiring_reports(_load_json(args.params_json))),
+        "finance-acquiring-detail": lambda: _j(api.get_finance_acquiring_detail(args.report_id)),
+        "finance-acquiring-by-period": lambda: _j(api.get_finance_acquiring_by_period(_load_json(args.params_json))),
+        "finance-document-categories": lambda: _j(api.get_finance_document_categories()),
+        "finance-documents": lambda: _j(api.get_finance_documents(_load_json(args.params_json) if args.params_json else None)),
+        "finance-document-download": lambda: _download(api.download_finance_document(args.doc_id), args.output_path),
+        "finance-documents-download": lambda: _download(api.download_finance_documents(_load_json(args.doc_ids_json)), args.output_path),
+        # WBD
+        "wbd-keys-add": lambda: _j(api.add_wbd_keys(args.offer_id, _load_json(args.keys_json))),
+        "wbd-keys-delete": lambda: _j(api.delete_wbd_keys(args.offer_id, _load_json(args.keys_json))),
+        "wbd-keys-redeemed": lambda: _j(api.get_wbd_redeemed_keys(args.offer_id)),
+        "wbd-keys-count": lambda: _j(api.get_wbd_keys_count(args.offer_id)),
+        "wbd-keys-list": lambda: _j(api.get_wbd_keys_list(args.offer_id)),
+        "wbd-offer-create": lambda: _j(api.create_wbd_offer(_load_json(args.params_json))),
+        "wbd-offer-update": lambda: _j(api.update_wbd_offer(args.offer_id, _load_json(args.params_json))),
+        "wbd-offer": lambda: _j(api.get_wbd_offer(args.offer_id)),
+        "wbd-offers": lambda: _j(api.get_wbd_offers()),
+        "wbd-offer-price": lambda: _j(api.update_wbd_offer_price(args.offer_id, args.price)),
+        "wbd-offer-status": lambda: _j(api.update_wbd_offer_status(args.offer_id, args.status)),
+        "wbd-catalog": lambda: _j(api.get_wbd_catalog()),
     }
 
     print(handlers[args.command]())
