@@ -29,25 +29,29 @@ src/mcp_server_wildberries/
 ├── __init__.py          # main(), версия
 ├── __main__.py          # python -m entry point
 ├── _shared.py           # FastMCP instance, хелперы (_get_api, _j, _save_bytes)
-├── server.py            # импорт всех tools/, реэкспорт mcp
+├── server.py            # 3 MCP tools: wb_search, wb_execute, wb_execute_file
+├── actions.py           # Каталог 235 действий (Action dataclass, ACTIONS dict)
+├── models.py            # Pydantic модели параметров (62 класса)
 ├── wb_api.py            # HTTP-клиент Wildberries Seller API
-├── cli.py               # CLI-интерфейс
-└── tools/
-    ├── general.py       # Общее: ping, seller-info, rating
-    ├── content.py       # Контент: категории, карточки, медиа, теги
-    ├── fbs_orders.py    # FBS-заказы, стикеры, поставки, пропуска
-    ├── dbw_orders.py    # DBW-заказы (доставка WB)
-    ├── dbs_orders.py    # DBS-заказы (dropship)
-    ├── pickup_orders.py # Самовывоз (click & collect)
-    ├── fbw_supplies.py  # FBW-поставки на склад WB
-    ├── advertising.py   # Реклама: кампании, ставки, статистика
-    ├── communications.py # Отзывы, вопросы, чат
-    ├── tariffs.py       # Тарифы и комиссии
-    ├── analytics.py     # Аналитика: воронка, поисковые запросы
-    ├── reports.py       # Отчёты: остатки, продажи, возвраты
-    ├── finance.py       # Финансы: баланс, отчёты, документы
-    └── wbd.py           # Цифровые товары WBD
+└── cli.py               # CLI-интерфейс (search/execute + прямые команды)
 ```
+
+### Паттерн Search + Execute
+
+Сервер предоставляет 3 MCP-инструмента вместо 235 отдельных. Все 235 действий доступны через каталог:
+
+- `wb_search(query, domain?, limit?)` — поиск действий по ключевым словам
+- `wb_execute(action, params_json)` — выполнение действия по ID
+- `wb_execute_file(action, file_path, params_json)` — скачивание файла
+
+Каталог (`actions.py`) хранит для каждого действия: ID, домен, описание, Pydantic-модель параметров, имя метода API, флаги (destructive, file), ключевые слова для поиска.
+
+### Добавление нового действия
+
+1. Добавить метод в `wb_api.py`
+2. Если нужна новая модель параметров — добавить в `models.py`
+3. Добавить `Action(...)` в `_ACTIONS_LIST` в `actions.py`
+4. Добавить CLI-команду в `cli.py` (subparser + handler)
 
 ### API Wildberries
 
