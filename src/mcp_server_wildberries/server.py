@@ -1,30 +1,6 @@
 """MCP server for Wildberries API — search + execute pattern."""
 
-import json
-import os
-
-from ._shared import mcp, _get_api, _j, _save_bytes
-
-_api = None
-
-
-def _get_api_cached():
-    global _api
-    if _api is None:
-        from .wb_api import WildberriesAPI
-
-        token = os.getenv("WB_TOKEN")
-        if not token:
-            raise RuntimeError("WB_TOKEN environment variable is required")
-        _api = WildberriesAPI(token)
-    return _api
-
-
-def _parse_json(raw: str, name: str) -> dict:
-    try:
-        return json.loads(raw)
-    except (json.JSONDecodeError, TypeError) as exc:
-        raise RuntimeError(f"Invalid JSON in {name}: {exc}") from exc
+from ._shared import mcp, _get_api, _to_json, _parse_json, _save_bytes
 
 
 def _search_actions(query: str, domain: str = "", limit: int = 10) -> list[dict]:
@@ -107,7 +83,7 @@ def wb_search(query: str, domain: str = "", limit: int = 10) -> str:
                 communications, tariffs, analytics, reports, finance, wbd)
         limit: max results (default 10)
     """
-    return _j(_search_actions(query, domain, limit))
+    return _to_json(_search_actions(query, domain, limit))
 
 
 @mcp.tool(annotations={"readOnlyHint": False})
@@ -123,18 +99,18 @@ def wb_execute(action: str, params_json: str = "{}") -> str:
     from .actions import ACTIONS
 
     if action not in ACTIONS:
-        return _j({"error": f"Unknown action: {action}. Use wb_search to find valid actions."})
+        return _to_json({"error": f"Unknown action: {action}. Use wb_search to find valid actions."})
 
     act = ACTIONS[action]
 
     if act.is_file:
-        return _j({"error": f"Action {action} returns a file. Use wb_execute_file instead."})
+        return _to_json({"error": f"Action {action} returns a file. Use wb_execute_file instead."})
 
     params = _parse_json(params_json, "params_json")
     api = _get_api()
 
     result = _dispatch(act, api, params)
-    return _j(result)
+    return _to_json(result)
 
 
 @mcp.tool(annotations={"readOnlyHint": False})
@@ -149,12 +125,12 @@ def wb_execute_file(action: str, file_path: str, params_json: str = "{}") -> str
     from .actions import ACTIONS
 
     if action not in ACTIONS:
-        return _j({"error": f"Unknown action: {action}. Use wb_search to find valid actions."})
+        return _to_json({"error": f"Unknown action: {action}. Use wb_search to find valid actions."})
 
     act = ACTIONS[action]
 
     if not act.is_file:
-        return _j({"error": f"Action {action} does not return a file. Use wb_execute instead."})
+        return _to_json({"error": f"Action {action} does not return a file. Use wb_execute instead."})
 
     params = _parse_json(params_json, "params_json")
     api = _get_api()

@@ -42,7 +42,8 @@ class WildberriesAPI:
     def _get(self, base: str, path: str, **kwargs) -> dict:
         resp = self.session.get(self._url(base, path), timeout=30, **kwargs)
         if not resp.ok:
-            raise RuntimeError(f"GET {path} -> {resp.status_code}: {resp.text}")
+            log.debug("GET %s -> %s: %s", path, resp.status_code, resp.text)
+            raise RuntimeError(f"GET {path} -> {resp.status_code}")
         if not resp.content:
             return {}
         return resp.json()
@@ -50,7 +51,8 @@ class WildberriesAPI:
     def _post(self, base: str, path: str, payload: dict | None = None, **kwargs) -> dict:
         resp = self.session.post(self._url(base, path), json=payload, timeout=30, **kwargs)
         if not resp.ok:
-            raise RuntimeError(f"POST {path} -> {resp.status_code}: {resp.text}")
+            log.debug("POST %s -> %s: %s", path, resp.status_code, resp.text)
+            raise RuntimeError(f"POST {path} -> {resp.status_code}")
         if not resp.content:
             return {}
         return resp.json()
@@ -58,7 +60,8 @@ class WildberriesAPI:
     def _put(self, base: str, path: str, payload: dict | None = None, **kwargs) -> dict:
         resp = self.session.put(self._url(base, path), json=payload, timeout=30, **kwargs)
         if not resp.ok:
-            raise RuntimeError(f"PUT {path} -> {resp.status_code}: {resp.text}")
+            log.debug("PUT %s -> %s: %s", path, resp.status_code, resp.text)
+            raise RuntimeError(f"PUT {path} -> {resp.status_code}")
         if not resp.content:
             return {}
         return resp.json()
@@ -66,7 +69,8 @@ class WildberriesAPI:
     def _patch(self, base: str, path: str, payload: dict | None = None, **kwargs) -> dict:
         resp = self.session.patch(self._url(base, path), json=payload, timeout=30, **kwargs)
         if not resp.ok:
-            raise RuntimeError(f"PATCH {path} -> {resp.status_code}: {resp.text}")
+            log.debug("PATCH %s -> %s: %s", path, resp.status_code, resp.text)
+            raise RuntimeError(f"PATCH {path} -> {resp.status_code}")
         if not resp.content:
             return {}
         return resp.json()
@@ -74,15 +78,17 @@ class WildberriesAPI:
     def _delete(self, base: str, path: str, payload: dict | None = None, **kwargs) -> dict:
         resp = self.session.request("DELETE", self._url(base, path), json=payload, timeout=30, **kwargs)
         if not resp.ok:
-            raise RuntimeError(f"DELETE {path} -> {resp.status_code}: {resp.text}")
+            log.debug("DELETE %s -> %s: %s", path, resp.status_code, resp.text)
+            raise RuntimeError(f"DELETE {path} -> {resp.status_code}")
         if not resp.content:
             return {}
         return resp.json()
 
     def _get_bytes(self, base: str, path: str, **kwargs) -> bytes:
-        resp = self.session.get(self._url(base, path), timeout=30, **kwargs)
+        resp = self.session.get(self._url(base, path), timeout=60, **kwargs)
         if not resp.ok:
-            raise RuntimeError(f"GET {path} -> {resp.status_code}: {resp.text}")
+            log.debug("GET %s -> %s: %s", path, resp.status_code, resp.text)
+            raise RuntimeError(f"GET {path} -> {resp.status_code}")
         return resp.content
 
     # ── General ─────────────────────────────────────────────────────
@@ -1075,7 +1081,8 @@ class WildberriesAPI:
             timeout=60,
         )
         if not resp.ok:
-            raise RuntimeError(f"POST /api/v1/documents/download/all -> {resp.status_code}: {resp.text}")
+            log.debug("POST /api/v1/documents/download/all -> %s: %s", resp.status_code, resp.text)
+            raise RuntimeError(f"POST /api/v1/documents/download/all -> {resp.status_code}")
         return resp.content
 
     # ── WBD (Wildberries Digital) ───────────────────────────────────
