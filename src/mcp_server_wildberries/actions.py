@@ -162,7 +162,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: general  (9 actions)
     # ======================================================================
     Action(
-        id="wb_ping",
+        id="ping",
         domain="general",
         description="Check Wildberries API availability",
         params_model=None,
@@ -170,7 +170,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["ping", "health", "проверка"],
     ),
     Action(
-        id="wb_news",
+        id="news",
         domain="general",
         description="Get seller portal news",
         params_model=None,
@@ -178,7 +178,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["news", "новости"],
     ),
     Action(
-        id="wb_seller_info",
+        id="seller-info",
         domain="general",
         description="Get seller name and profile ID",
         params_model=None,
@@ -186,7 +186,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["seller", "info", "продавец"],
     ),
     Action(
-        id="wb_seller_rating",
+        id="seller-rating",
         domain="general",
         description="Get seller rating",
         params_model=None,
@@ -194,7 +194,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["rating", "рейтинг"],
     ),
     Action(
-        id="wb_subscriptions",
+        id="subscriptions",
         domain="general",
         description="Get notification subscriptions",
         params_model=None,
@@ -202,7 +202,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["subscriptions", "подписки"],
     ),
     Action(
-        id="wb_user_invite",
+        id="user-invite",
         domain="general",
         description="Create user invitation",
         params_model=UserInviteParams,
@@ -210,7 +210,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["user", "invite", "пригласить"],
     ),
     Action(
-        id="wb_users",
+        id="users",
         domain="general",
         description="Get list of users",
         params_model=None,
@@ -218,7 +218,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["users", "пользователи"],
     ),
     Action(
-        id="wb_user_access_update",
+        id="user-access-update",
         domain="general",
         description="Update user access permissions",
         params_model=UserAccessUpdateParams,
@@ -226,7 +226,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["user", "access", "permissions", "доступ"],
     ),
     Action(
-        id="wb_user_delete",
+        id="user-delete",
         domain="general",
         description="Delete user",
         params_model=UserIdParams,
@@ -239,7 +239,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: content  (18 actions)
     # ======================================================================
     Action(
-        id="wb_content_parent_categories",
+        id="content-parent-categories",
         domain="content",
         description="Get parent categories",
         params_model=None,
@@ -247,7 +247,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["categories", "категории"],
     ),
     Action(
-        id="wb_content_subjects",
+        id="content-subjects",
         domain="content",
         description="Get subjects (categories) list",
         params_model=SubjectsListParams,
@@ -255,7 +255,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["subjects", "предметы", "категории"],
     ),
     Action(
-        id="wb_content_characteristics",
+        id="content-characteristics",
         domain="content",
         description="Get subject characteristics",
         params_model=SubjectIdParams,
@@ -263,7 +263,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["characteristics", "характеристики"],
     ),
     Action(
-        id="wb_content_colors",
+        id="content-colors",
         domain="content",
         description="Get color directory",
         params_model=None,
@@ -271,7 +271,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["colors", "цвета"],
     ),
     Action(
-        id="wb_content_kinds",
+        id="content-kinds",
         domain="content",
         description="Get gender directory",
         params_model=None,
@@ -279,7 +279,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["kinds", "пол"],
     ),
     Action(
-        id="wb_content_countries",
+        id="content-countries",
         domain="content",
         description="Get country directory",
         params_model=None,
@@ -287,7 +287,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["countries", "страны"],
     ),
     Action(
-        id="wb_content_seasons",
+        id="content-seasons",
         domain="content",
         description="Get season directory",
         params_model=None,
@@ -295,7 +295,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["seasons", "сезоны"],
     ),
     Action(
-        id="wb_content_vat",
+        id="content-vat",
         domain="content",
         description="Get VAT rates",
         params_model=None,
@@ -303,7 +303,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["vat", "НДС"],
     ),
     Action(
-        id="wb_content_tnved",
+        id="content-tnved",
         domain="content",
         description="Get TNVED codes for subject",
         params_model=SubjectIdParams,
@@ -311,7 +311,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tnved", "ТНВЭД"],
     ),
     Action(
-        id="wb_content_brands",
+        id="content-brands",
         domain="content",
         description="Get brands",
         params_model=BrandsParams,
@@ -319,7 +319,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["brands", "бренды"],
     ),
     Action(
-        id="wb_content_tags",
+        id="content-tags",
         domain="content",
         description="Get seller tags",
         params_model=None,
@@ -327,7 +327,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tags", "теги"],
     ),
     Action(
-        id="wb_content_tag_create",
+        id="content-tag-create",
         domain="content",
         description="Create tag",
         params_model=TagCreateParams,
@@ -335,7 +335,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tag", "create", "создать"],
     ),
     Action(
-        id="wb_content_tag_update",
+        id="content-tag-update",
         domain="content",
         description="Update tag",
         params_model=TagUpdateParams,
@@ -343,7 +343,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tag", "update", "обновить"],
     ),
     Action(
-        id="wb_content_tag_delete",
+        id="content-tag-delete",
         domain="content",
         description="Delete tag",
         params_model=TagIdParams,
@@ -352,7 +352,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tag", "delete", "удалить"],
     ),
     Action(
-        id="wb_content_tag_link",
+        id="content-tag-link",
         domain="content",
         description="Link tag to products",
         params_model=TagLinkParams,
@@ -360,7 +360,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tag", "link", "привязать"],
     ),
     Action(
-        id="wb_content_cards_list",
+        id="content-cards-list",
         domain="content",
         description="Get product cards list",
         params_model=CardsListParams,
@@ -368,7 +368,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["cards", "products", "карточки", "товары"],
     ),
     Action(
-        id="wb_content_cards_errors",
+        id="content-cards-errors",
         domain="content",
         description="Get card upload errors",
         params_model=None,
@@ -376,7 +376,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["cards", "errors", "ошибки"],
     ),
     Action(
-        id="wb_content_cards_update",
+        id="content-cards-update",
         domain="content",
         description="Update product cards",
         params_model=CardsUpdateParams,
@@ -388,7 +388,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: fbs_orders  (31 actions)
     # ======================================================================
     Action(
-        id="wb_fbs_orders_new",
+        id="fbs-orders-new",
         domain="fbs_orders",
         description="Get new FBS assembly orders",
         params_model=None,
@@ -396,7 +396,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "orders", "new", "заказы"],
     ),
     Action(
-        id="wb_fbs_orders",
+        id="fbs-orders",
         domain="fbs_orders",
         description="Get FBS orders",
         params_model=FbsOrdersParams,
@@ -404,7 +404,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "orders", "заказы"],
     ),
     Action(
-        id="wb_fbs_orders_status",
+        id="fbs-orders-status",
         domain="fbs_orders",
         description="Get FBS order statuses",
         params_model=OrderIdsParams,
@@ -412,7 +412,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "orders", "status", "статус"],
     ),
     Action(
-        id="wb_fbs_order_cancel",
+        id="fbs-order-cancel",
         domain="fbs_orders",
         description="Cancel FBS order",
         params_model=OrderIdParams,
@@ -421,7 +421,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "order", "cancel", "отмена"],
     ),
     Action(
-        id="wb_fbs_stickers",
+        id="fbs-stickers",
         domain="fbs_orders",
         description="Get FBS order stickers",
         params_model=FbsStickersParams,
@@ -429,7 +429,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "stickers", "стикеры"],
     ),
     Action(
-        id="wb_fbs_stickers_cross_border",
+        id="fbs-stickers-cross-border",
         domain="fbs_orders",
         description="Get cross-border stickers",
         params_model=OrderIdsParams,
@@ -437,7 +437,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "stickers", "cross-border"],
     ),
     Action(
-        id="wb_fbs_orders_status_history",
+        id="fbs-orders-status-history",
         domain="fbs_orders",
         description="Get FBS order status history",
         params_model=OrderIdsParams,
@@ -445,7 +445,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "orders", "status", "history", "история"],
     ),
     Action(
-        id="wb_fbs_orders_client",
+        id="fbs-orders-client",
         domain="fbs_orders",
         description="Get FBS order client info",
         params_model=OrderIdsParams,
@@ -453,7 +453,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "orders", "client", "клиент"],
     ),
     Action(
-        id="wb_fbs_reshipment_orders",
+        id="fbs-reshipment-orders",
         domain="fbs_orders",
         description="Get FBS reshipment orders",
         params_model=None,
@@ -461,7 +461,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "reshipment", "перевозка"],
     ),
     Action(
-        id="wb_fbs_order_meta",
+        id="fbs-order-meta",
         domain="fbs_orders",
         description="Get FBS order metadata",
         params_model=OrderIdsParams,
@@ -469,7 +469,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "метаданные"],
     ),
     Action(
-        id="wb_fbs_order_meta_delete",
+        id="fbs-order-meta-delete",
         domain="fbs_orders",
         description="Delete FBS order metadata",
         params_model=OrderIdParams,
@@ -478,7 +478,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "delete"],
     ),
     Action(
-        id="wb_fbs_order_meta_sgtin",
+        id="fbs-order-meta-sgtin",
         domain="fbs_orders",
         description="Set Honest Sign codes for FBS order",
         params_model=OrderSgtinParams,
@@ -486,7 +486,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "sgtin", "честный знак"],
     ),
     Action(
-        id="wb_fbs_order_meta_uin",
+        id="fbs-order-meta-uin",
         domain="fbs_orders",
         description="Set UIN for FBS order",
         params_model=OrderUinParams,
@@ -494,7 +494,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "uin", "УИН"],
     ),
     Action(
-        id="wb_fbs_order_meta_imei",
+        id="fbs-order-meta-imei",
         domain="fbs_orders",
         description="Set IMEI for FBS order",
         params_model=OrderImeiParams,
@@ -502,7 +502,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "imei"],
     ),
     Action(
-        id="wb_fbs_order_meta_gtin",
+        id="fbs-order-meta-gtin",
         domain="fbs_orders",
         description="Set GTIN for FBS order",
         params_model=OrderGtinParams,
@@ -510,7 +510,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "gtin"],
     ),
     Action(
-        id="wb_fbs_order_meta_expiration",
+        id="fbs-order-meta-expiration",
         domain="fbs_orders",
         description="Set expiration date for FBS order",
         params_model=OrderExpirationParams,
@@ -518,7 +518,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "expiration", "годность"],
     ),
     Action(
-        id="wb_fbs_order_meta_customs",
+        id="fbs-order-meta-customs",
         domain="fbs_orders",
         description="Set customs declaration for FBS order",
         params_model=OrderCustomsParams,
@@ -526,7 +526,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "meta", "customs", "таможня"],
     ),
     Action(
-        id="wb_fbs_supply_create",
+        id="fbs-supply-create",
         domain="fbs_orders",
         description="Create FBS supply",
         params_model=FbsSupplyCreateParams,
@@ -534,7 +534,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "create", "поставка"],
     ),
     Action(
-        id="wb_fbs_supplies",
+        id="fbs-supplies",
         domain="fbs_orders",
         description="Get FBS supplies list",
         params_model=FbsSuppliesParams,
@@ -542,7 +542,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supplies", "поставки"],
     ),
     Action(
-        id="wb_fbs_supply_add_orders",
+        id="fbs-supply-add-orders",
         domain="fbs_orders",
         description="Add orders to FBS supply",
         params_model=FbsSupplyAddOrdersParams,
@@ -550,7 +550,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "orders", "добавить"],
     ),
     Action(
-        id="wb_fbs_supply",
+        id="fbs-supply",
         domain="fbs_orders",
         description="Get FBS supply details",
         params_model=SupplyIdParams,
@@ -558,7 +558,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "поставка"],
     ),
     Action(
-        id="wb_fbs_supply_delete",
+        id="fbs-supply-delete",
         domain="fbs_orders",
         description="Delete FBS supply",
         params_model=SupplyIdParams,
@@ -567,7 +567,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "delete", "удалить"],
     ),
     Action(
-        id="wb_fbs_supply_orders",
+        id="fbs-supply-orders",
         domain="fbs_orders",
         description="Get FBS supply order IDs",
         params_model=SupplyIdParams,
@@ -575,7 +575,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "orders"],
     ),
     Action(
-        id="wb_fbs_supply_deliver",
+        id="fbs-supply-deliver",
         domain="fbs_orders",
         description="Deliver FBS supply",
         params_model=SupplyIdParams,
@@ -583,7 +583,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "deliver", "доставка"],
     ),
     Action(
-        id="wb_fbs_supply_barcode",
+        id="fbs-supply-barcode",
         domain="fbs_orders",
         description="Get FBS supply barcode",
         params_model=SupplyIdParams,
@@ -591,7 +591,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "barcode", "штрихкод"],
     ),
     Action(
-        id="wb_fbs_supply_boxes",
+        id="fbs-supply-boxes",
         domain="fbs_orders",
         description="Get FBS supply boxes",
         params_model=SupplyIdParams,
@@ -599,7 +599,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "supply", "boxes", "коробки"],
     ),
     Action(
-        id="wb_fbs_pass_offices",
+        id="fbs-pass-offices",
         domain="fbs_orders",
         description="Get warehouses requiring access pass",
         params_model=None,
@@ -607,7 +607,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "pass", "offices", "пропуск"],
     ),
     Action(
-        id="wb_fbs_passes",
+        id="fbs-passes",
         domain="fbs_orders",
         description="Get all access passes",
         params_model=None,
@@ -615,7 +615,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "passes", "пропуска"],
     ),
     Action(
-        id="wb_fbs_pass_create",
+        id="fbs-pass-create",
         domain="fbs_orders",
         description="Create access pass",
         params_model=FbsPassCreateParams,
@@ -623,7 +623,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "pass", "create", "пропуск"],
     ),
     Action(
-        id="wb_fbs_pass_update",
+        id="fbs-pass-update",
         domain="fbs_orders",
         description="Update access pass",
         params_model=FbsPassUpdateParams,
@@ -631,7 +631,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbs", "pass", "update"],
     ),
     Action(
-        id="wb_fbs_pass_delete",
+        id="fbs-pass-delete",
         domain="fbs_orders",
         description="Delete access pass",
         params_model=PassIdParams,
@@ -644,7 +644,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: dbw_orders  (16 actions)
     # ======================================================================
     Action(
-        id="wb_dbw_orders_new",
+        id="dbw-orders-new",
         domain="dbw_orders",
         description="Get new DBW assembly tasks",
         params_model=None,
@@ -652,7 +652,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "orders", "new"],
     ),
     Action(
-        id="wb_dbw_orders",
+        id="dbw-orders",
         domain="dbw_orders",
         description="Get completed DBW assembly tasks",
         params_model=None,
@@ -660,7 +660,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "orders", "completed"],
     ),
     Action(
-        id="wb_dbw_delivery_date",
+        id="dbw-delivery-date",
         domain="dbw_orders",
         description="Get DBW delivery dates",
         params_model=OrderIdsParams,
@@ -668,7 +668,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "delivery", "date"],
     ),
     Action(
-        id="wb_dbw_client",
+        id="dbw-client",
         domain="dbw_orders",
         description="Get DBW client info",
         params_model=OrderIdsParams,
@@ -676,7 +676,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "client", "клиент"],
     ),
     Action(
-        id="wb_dbw_orders_status",
+        id="dbw-orders-status",
         domain="dbw_orders",
         description="Get DBW order statuses",
         params_model=OrderIdsParams,
@@ -684,7 +684,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "orders", "status"],
     ),
     Action(
-        id="wb_dbw_order_confirm",
+        id="dbw-order-confirm",
         domain="dbw_orders",
         description="Confirm DBW order",
         params_model=OrderIdParams,
@@ -692,7 +692,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "confirm", "подтвердить"],
     ),
     Action(
-        id="wb_dbw_stickers",
+        id="dbw-stickers",
         domain="dbw_orders",
         description="Get DBW stickers",
         params_model=OrderIdsParams,
@@ -700,7 +700,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "stickers"],
     ),
     Action(
-        id="wb_dbw_order_assemble",
+        id="dbw-order-assemble",
         domain="dbw_orders",
         description="Move DBW order to delivery",
         params_model=OrderIdParams,
@@ -708,7 +708,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "assemble", "delivery"],
     ),
     Action(
-        id="wb_dbw_courier",
+        id="dbw-courier",
         domain="dbw_orders",
         description="Get DBW courier info",
         params_model=OrderIdsParams,
@@ -716,7 +716,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "courier", "курьер"],
     ),
     Action(
-        id="wb_dbw_order_cancel",
+        id="dbw-order-cancel",
         domain="dbw_orders",
         description="Cancel DBW order",
         params_model=OrderIdParams,
@@ -725,7 +725,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "cancel", "отмена"],
     ),
     Action(
-        id="wb_dbw_order_meta",
+        id="dbw-order-meta",
         domain="dbw_orders",
         description="Get DBW order metadata",
         params_model=OrderIdParams,
@@ -733,7 +733,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "meta"],
     ),
     Action(
-        id="wb_dbw_order_meta_delete",
+        id="dbw-order-meta-delete",
         domain="dbw_orders",
         description="Delete DBW order metadata",
         params_model=OrderIdParams,
@@ -742,7 +742,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "meta", "delete"],
     ),
     Action(
-        id="wb_dbw_order_meta_sgtin",
+        id="dbw-order-meta-sgtin",
         domain="dbw_orders",
         description="Set Honest Sign codes for DBW order",
         params_model=OrderSgtinParams,
@@ -750,7 +750,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "meta", "sgtin"],
     ),
     Action(
-        id="wb_dbw_order_meta_uin",
+        id="dbw-order-meta-uin",
         domain="dbw_orders",
         description="Set UIN for DBW order",
         params_model=OrderUinParams,
@@ -758,7 +758,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "meta", "uin"],
     ),
     Action(
-        id="wb_dbw_order_meta_imei",
+        id="dbw-order-meta-imei",
         domain="dbw_orders",
         description="Set IMEI for DBW order",
         params_model=OrderImeiParams,
@@ -766,7 +766,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbw", "meta", "imei"],
     ),
     Action(
-        id="wb_dbw_order_meta_gtin",
+        id="dbw-order-meta-gtin",
         domain="dbw_orders",
         description="Set GTIN for DBW order",
         params_model=OrderGtinParams,
@@ -778,7 +778,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: dbs_orders  (20 actions)
     # ======================================================================
     Action(
-        id="wb_dbs_orders_new",
+        id="dbs-orders-new",
         domain="dbs_orders",
         description="Get new DBS orders",
         params_model=None,
@@ -786,7 +786,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "orders", "new"],
     ),
     Action(
-        id="wb_dbs_orders",
+        id="dbs-orders",
         domain="dbs_orders",
         description="Get completed DBS orders",
         params_model=None,
@@ -794,7 +794,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "orders"],
     ),
     Action(
-        id="wb_dbs_groups_info",
+        id="dbs-groups-info",
         domain="dbs_orders",
         description="Get DBS paid delivery info",
         params_model=OrderIdsParams,
@@ -802,7 +802,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "groups", "delivery"],
     ),
     Action(
-        id="wb_dbs_client",
+        id="dbs-client",
         domain="dbs_orders",
         description="Get DBS client info",
         params_model=OrderIdsParams,
@@ -810,7 +810,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "client"],
     ),
     Action(
-        id="wb_dbs_b2b_info",
+        id="dbs-b2b-info",
         domain="dbs_orders",
         description="Get DBS B2B buyer info",
         params_model=OrderIdsParams,
@@ -818,7 +818,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "b2b"],
     ),
     Action(
-        id="wb_dbs_delivery_date",
+        id="dbs-delivery-date",
         domain="dbs_orders",
         description="Get DBS delivery dates",
         params_model=OrderIdsParams,
@@ -826,7 +826,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "delivery", "date"],
     ),
     Action(
-        id="wb_dbs_orders_status",
+        id="dbs-orders-status",
         domain="dbs_orders",
         description="Get DBS order statuses",
         params_model=OrderIdsParams,
@@ -834,7 +834,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "status"],
     ),
     Action(
-        id="wb_dbs_order_cancel",
+        id="dbs-order-cancel",
         domain="dbs_orders",
         description="Cancel DBS order",
         params_model=OrderIdsParams,
@@ -843,7 +843,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "cancel"],
     ),
     Action(
-        id="wb_dbs_order_confirm",
+        id="dbs-order-confirm",
         domain="dbs_orders",
         description="Confirm DBS order",
         params_model=OrderIdsParams,
@@ -851,7 +851,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "confirm"],
     ),
     Action(
-        id="wb_dbs_stickers",
+        id="dbs-stickers",
         domain="dbs_orders",
         description="Get DBS stickers",
         params_model=OrderIdsParams,
@@ -859,7 +859,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "stickers"],
     ),
     Action(
-        id="wb_dbs_order_deliver",
+        id="dbs-order-deliver",
         domain="dbs_orders",
         description="Move DBS order to delivery",
         params_model=OrderIdsParams,
@@ -867,7 +867,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "deliver"],
     ),
     Action(
-        id="wb_dbs_order_receive",
+        id="dbs-order-receive",
         domain="dbs_orders",
         description="Confirm DBS order receipt",
         params_model=OrderIdsParams,
@@ -875,7 +875,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "receive"],
     ),
     Action(
-        id="wb_dbs_order_reject",
+        id="dbs-order-reject",
         domain="dbs_orders",
         description="Record DBS order rejection",
         params_model=OrderIdsParams,
@@ -883,7 +883,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "reject"],
     ),
     Action(
-        id="wb_dbs_order_meta",
+        id="dbs-order-meta",
         domain="dbs_orders",
         description="Get DBS order metadata",
         params_model=OrderIdsParams,
@@ -891,7 +891,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "meta"],
     ),
     Action(
-        id="wb_dbs_order_meta_delete",
+        id="dbs-order-meta-delete",
         domain="dbs_orders",
         description="Delete DBS order metadata",
         params_model=OrderIdsParams,
@@ -900,7 +900,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "meta", "delete"],
     ),
     Action(
-        id="wb_dbs_order_meta_sgtin",
+        id="dbs-order-meta-sgtin",
         domain="dbs_orders",
         description="Set Honest Sign codes for DBS orders",
         params_model=OrdersBatchParams,
@@ -908,7 +908,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "meta", "sgtin"],
     ),
     Action(
-        id="wb_dbs_order_meta_uin",
+        id="dbs-order-meta-uin",
         domain="dbs_orders",
         description="Set UIN for DBS orders",
         params_model=OrdersBatchParams,
@@ -916,7 +916,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "meta", "uin"],
     ),
     Action(
-        id="wb_dbs_order_meta_imei",
+        id="dbs-order-meta-imei",
         domain="dbs_orders",
         description="Set IMEI for DBS orders",
         params_model=OrdersBatchParams,
@@ -924,7 +924,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "meta", "imei"],
     ),
     Action(
-        id="wb_dbs_order_meta_gtin",
+        id="dbs-order-meta-gtin",
         domain="dbs_orders",
         description="Set GTIN for DBS orders",
         params_model=OrdersBatchParams,
@@ -932,7 +932,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["dbs", "meta", "gtin"],
     ),
     Action(
-        id="wb_dbs_order_meta_customs",
+        id="dbs-order-meta-customs",
         domain="dbs_orders",
         description="Set customs for DBS orders",
         params_model=OrdersBatchParams,
@@ -944,7 +944,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: pickup_orders  (16 actions)
     # ======================================================================
     Action(
-        id="wb_pickup_orders_new",
+        id="pickup-orders-new",
         domain="pickup_orders",
         description="Get new pickup orders",
         params_model=None,
@@ -952,7 +952,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "orders", "new", "самовывоз"],
     ),
     Action(
-        id="wb_pickup_order_confirm",
+        id="pickup-order-confirm",
         domain="pickup_orders",
         description="Confirm pickup order",
         params_model=OrderIdsParams,
@@ -960,7 +960,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "confirm"],
     ),
     Action(
-        id="wb_pickup_order_prepare",
+        id="pickup-order-prepare",
         domain="pickup_orders",
         description="Mark pickup order as ready",
         params_model=OrderIdsParams,
@@ -968,7 +968,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "prepare"],
     ),
     Action(
-        id="wb_pickup_client",
+        id="pickup-client",
         domain="pickup_orders",
         description="Get pickup client info",
         params_model=OrderIdsParams,
@@ -976,7 +976,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "client"],
     ),
     Action(
-        id="wb_pickup_verify_identity",
+        id="pickup-verify-identity",
         domain="pickup_orders",
         description="Verify pickup order ownership",
         params_model=OrderIdsParams,
@@ -984,7 +984,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "verify"],
     ),
     Action(
-        id="wb_pickup_order_receive",
+        id="pickup-order-receive",
         domain="pickup_orders",
         description="Confirm pickup receipt",
         params_model=OrderIdsParams,
@@ -992,7 +992,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "receive"],
     ),
     Action(
-        id="wb_pickup_order_reject",
+        id="pickup-order-reject",
         domain="pickup_orders",
         description="Record pickup rejection",
         params_model=OrderIdsParams,
@@ -1000,7 +1000,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "reject"],
     ),
     Action(
-        id="wb_pickup_orders_status",
+        id="pickup-orders-status",
         domain="pickup_orders",
         description="Get pickup order statuses",
         params_model=OrderIdsParams,
@@ -1008,7 +1008,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "status"],
     ),
     Action(
-        id="wb_pickup_orders_completed",
+        id="pickup-orders-completed",
         domain="pickup_orders",
         description="Get completed pickup orders",
         params_model=None,
@@ -1016,7 +1016,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "completed"],
     ),
     Action(
-        id="wb_pickup_order_cancel",
+        id="pickup-order-cancel",
         domain="pickup_orders",
         description="Cancel pickup order",
         params_model=OrderIdsParams,
@@ -1025,7 +1025,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "cancel"],
     ),
     Action(
-        id="wb_pickup_order_meta",
+        id="pickup-order-meta",
         domain="pickup_orders",
         description="Get pickup order metadata",
         params_model=OrderIdsParams,
@@ -1033,7 +1033,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "meta"],
     ),
     Action(
-        id="wb_pickup_order_meta_delete",
+        id="pickup-order-meta-delete",
         domain="pickup_orders",
         description="Delete pickup order metadata",
         params_model=OrderIdsParams,
@@ -1042,7 +1042,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "meta", "delete"],
     ),
     Action(
-        id="wb_pickup_order_meta_sgtin",
+        id="pickup-order-meta-sgtin",
         domain="pickup_orders",
         description="Set Honest Sign codes for pickup orders",
         params_model=OrdersBatchParams,
@@ -1050,7 +1050,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "meta", "sgtin"],
     ),
     Action(
-        id="wb_pickup_order_meta_uin",
+        id="pickup-order-meta-uin",
         domain="pickup_orders",
         description="Set UIN for pickup orders",
         params_model=OrdersBatchParams,
@@ -1058,7 +1058,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "meta", "uin"],
     ),
     Action(
-        id="wb_pickup_order_meta_imei",
+        id="pickup-order-meta-imei",
         domain="pickup_orders",
         description="Set IMEI for pickup orders",
         params_model=OrdersBatchParams,
@@ -1066,7 +1066,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["pickup", "meta", "imei"],
     ),
     Action(
-        id="wb_pickup_order_meta_gtin",
+        id="pickup-order-meta-gtin",
         domain="pickup_orders",
         description="Set GTIN for pickup orders",
         params_model=OrdersBatchParams,
@@ -1078,7 +1078,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: fbw_supplies  (7 actions)
     # ======================================================================
     Action(
-        id="wb_fbw_acceptance_options",
+        id="fbw-acceptance-options",
         domain="fbw_supplies",
         description="Get FBW warehouse acceptance options",
         params_model=FbwAcceptanceOptionsParams,
@@ -1086,7 +1086,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbw", "acceptance"],
     ),
     Action(
-        id="wb_fbw_warehouses",
+        id="fbw-warehouses",
         domain="fbw_supplies",
         description="Get Wildberries warehouse list",
         params_model=None,
@@ -1094,7 +1094,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbw", "warehouses", "склады"],
     ),
     Action(
-        id="wb_fbw_transit_tariffs",
+        id="fbw-transit-tariffs",
         domain="fbw_supplies",
         description="Get transit tariffs",
         params_model=None,
@@ -1102,7 +1102,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbw", "transit", "tariffs"],
     ),
     Action(
-        id="wb_fbw_supplies",
+        id="fbw-supplies",
         domain="fbw_supplies",
         description="Get FBW supplies list",
         params_model=FbwSuppliesFilterParams,
@@ -1110,7 +1110,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbw", "supplies", "поставки"],
     ),
     Action(
-        id="wb_fbw_supply",
+        id="fbw-supply",
         domain="fbw_supplies",
         description="Get FBW supply details",
         params_model=SupplyIdParams,
@@ -1118,7 +1118,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbw", "supply"],
     ),
     Action(
-        id="wb_fbw_supply_goods",
+        id="fbw-supply-goods",
         domain="fbw_supplies",
         description="Get FBW supply goods",
         params_model=SupplyIdParams,
@@ -1126,7 +1126,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["fbw", "supply", "goods"],
     ),
     Action(
-        id="wb_fbw_supply_package",
+        id="fbw-supply-package",
         domain="fbw_supplies",
         description="Get FBW supply package info",
         params_model=SupplyIdParams,
@@ -1138,7 +1138,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: advertising  (26 actions)
     # ======================================================================
     Action(
-        id="wb_advert_campaigns_count",
+        id="advert-campaigns-count",
         domain="advertising",
         description="Get advertising campaign counts",
         params_model=None,
@@ -1146,7 +1146,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaigns", "count"],
     ),
     Action(
-        id="wb_advert_campaigns",
+        id="advert-campaigns",
         domain="advertising",
         description="Get advertising campaign details",
         params_model=CampaignIdsParams,
@@ -1154,7 +1154,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaigns"],
     ),
     Action(
-        id="wb_advert_min_bids",
+        id="advert-min-bids",
         domain="advertising",
         description="Get minimum bid rates",
         params_model=AdvertMinBidsParams,
@@ -1162,7 +1162,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "bids", "min"],
     ),
     Action(
-        id="wb_advert_campaign_create",
+        id="advert-campaign-create",
         domain="advertising",
         description="Create advertising campaign",
         params_model=AdvertCampaignCreateParams,
@@ -1170,7 +1170,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaign", "create"],
     ),
     Action(
-        id="wb_advert_subjects",
+        id="advert-subjects",
         domain="advertising",
         description="Get available categories for advertising",
         params_model=None,
@@ -1178,7 +1178,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "subjects"],
     ),
     Action(
-        id="wb_advert_nms",
+        id="advert-nms",
         domain="advertising",
         description="Get product cards for advertising",
         params_model=AdvertNmsParams,
@@ -1186,7 +1186,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "nms", "cards"],
     ),
     Action(
-        id="wb_advert_campaign_delete",
+        id="advert-campaign-delete",
         domain="advertising",
         description="Delete advertising campaign",
         params_model=CampaignIdParams,
@@ -1195,7 +1195,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaign", "delete"],
     ),
     Action(
-        id="wb_advert_campaign_rename",
+        id="advert-campaign-rename",
         domain="advertising",
         description="Rename advertising campaign",
         params_model=CampaignRenameParams,
@@ -1203,7 +1203,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaign", "rename"],
     ),
     Action(
-        id="wb_advert_campaign_start",
+        id="advert-campaign-start",
         domain="advertising",
         description="Start advertising campaign",
         params_model=CampaignIdParams,
@@ -1211,7 +1211,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaign", "start"],
     ),
     Action(
-        id="wb_advert_campaign_pause",
+        id="advert-campaign-pause",
         domain="advertising",
         description="Pause advertising campaign",
         params_model=CampaignIdParams,
@@ -1219,7 +1219,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaign", "pause"],
     ),
     Action(
-        id="wb_advert_campaign_stop",
+        id="advert-campaign-stop",
         domain="advertising",
         description="Stop advertising campaign",
         params_model=CampaignIdParams,
@@ -1227,7 +1227,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "campaign", "stop"],
     ),
     Action(
-        id="wb_advert_placements_update",
+        id="advert-placements-update",
         domain="advertising",
         description="Update advertising placements",
         params_model=AdvertPlacementsUpdateParams,
@@ -1235,7 +1235,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "placements"],
     ),
     Action(
-        id="wb_advert_bids_update",
+        id="advert-bids-update",
         domain="advertising",
         description="Update advertising bids",
         params_model=AdvertBidsUpdateParams,
@@ -1243,7 +1243,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "bids", "update"],
     ),
     Action(
-        id="wb_advert_nms_update",
+        id="advert-nms-update",
         domain="advertising",
         description="Manage product cards in campaign",
         params_model=AdvertNmsUpdateParams,
@@ -1251,7 +1251,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "nms", "update"],
     ),
     Action(
-        id="wb_advert_bid_recommendations",
+        id="advert-bid-recommendations",
         domain="advertising",
         description="Get bid recommendations",
         params_model=CampaignIdParams,
@@ -1259,7 +1259,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "bids", "recommendations"],
     ),
     Action(
-        id="wb_advert_search_bids",
+        id="advert-search-bids",
         domain="advertising",
         description="Get search cluster bids",
         params_model=AdvertSearchBidsGetParams,
@@ -1267,7 +1267,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "search", "bids"],
     ),
     Action(
-        id="wb_advert_search_bids_set",
+        id="advert-search-bids-set",
         domain="advertising",
         description="Set search cluster bids",
         params_model=AdvertSearchBidsSetParams,
@@ -1275,7 +1275,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "search", "bids", "set"],
     ),
     Action(
-        id="wb_advert_search_bids_delete",
+        id="advert-search-bids-delete",
         domain="advertising",
         description="Delete search cluster bids",
         params_model=AdvertSearchBidsSetParams,
@@ -1284,7 +1284,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "search", "bids", "delete"],
     ),
     Action(
-        id="wb_advert_minus_phrases",
+        id="advert-minus-phrases",
         domain="advertising",
         description="Get negative phrases",
         params_model=AdvertMinusPhraseGetParams,
@@ -1292,7 +1292,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "minus", "phrases"],
     ),
     Action(
-        id="wb_advert_minus_phrases_set",
+        id="advert-minus-phrases-set",
         domain="advertising",
         description="Set negative phrases",
         params_model=AdvertMinusPhraseSetParams,
@@ -1300,7 +1300,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "minus", "phrases", "set"],
     ),
     Action(
-        id="wb_advert_balance",
+        id="advert-balance",
         domain="advertising",
         description="Get advertising account balance",
         params_model=None,
@@ -1308,7 +1308,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "balance"],
     ),
     Action(
-        id="wb_advert_budget",
+        id="advert-budget",
         domain="advertising",
         description="Get advertising campaign budget",
         params_model=CampaignIdParams,
@@ -1316,7 +1316,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "budget"],
     ),
     Action(
-        id="wb_advert_budget_deposit",
+        id="advert-budget-deposit",
         domain="advertising",
         description="Replenish campaign budget",
         params_model=CampaignBudgetDepositParams,
@@ -1324,7 +1324,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "budget", "deposit"],
     ),
     Action(
-        id="wb_advert_cost_history",
+        id="advert-cost-history",
         domain="advertising",
         description="Get advertising cost history",
         params_model=AdvertDateRangeParams,
@@ -1332,7 +1332,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "cost", "history"],
     ),
     Action(
-        id="wb_advert_payments",
+        id="advert-payments",
         domain="advertising",
         description="Get advertising payment history",
         params_model=AdvertDateRangeParams,
@@ -1340,7 +1340,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["advert", "payments"],
     ),
     Action(
-        id="wb_advert_search_stats",
+        id="advert-search-stats",
         domain="advertising",
         description="Get search cluster statistics",
         params_model=AdvertSearchStatsParams,
@@ -1352,7 +1352,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: communications  (22 actions)
     # ======================================================================
     Action(
-        id="wb_new_feedbacks_questions",
+        id="new-feedbacks-questions",
         domain="communications",
         description="Get count of unread questions and reviews",
         params_model=None,
@@ -1360,7 +1360,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedbacks", "questions", "count"],
     ),
     Action(
-        id="wb_questions_unanswered_count",
+        id="questions-unanswered-count",
         domain="communications",
         description="Get count of unanswered questions",
         params_model=None,
@@ -1368,7 +1368,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["questions", "unanswered"],
     ),
     Action(
-        id="wb_questions_count",
+        id="questions-count",
         domain="communications",
         description="Get question count for period",
         params_model=QuestionsCountParams,
@@ -1376,7 +1376,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["questions", "count"],
     ),
     Action(
-        id="wb_questions",
+        id="questions",
         domain="communications",
         description="Get questions list",
         params_model=QuestionsParams,
@@ -1384,7 +1384,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["questions", "вопросы"],
     ),
     Action(
-        id="wb_question_manage",
+        id="question-manage",
         domain="communications",
         description="Manage question (answer, reject, view)",
         params_model=QuestionManageParams,
@@ -1392,7 +1392,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["question", "answer", "manage"],
     ),
     Action(
-        id="wb_question",
+        id="question",
         domain="communications",
         description="Get individual question",
         params_model=QuestionIdParams,
@@ -1400,7 +1400,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["question"],
     ),
     Action(
-        id="wb_feedbacks_unanswered_count",
+        id="feedbacks-unanswered-count",
         domain="communications",
         description="Get count of unprocessed reviews",
         params_model=None,
@@ -1408,7 +1408,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedbacks", "unanswered"],
     ),
     Action(
-        id="wb_feedbacks_count",
+        id="feedbacks-count",
         domain="communications",
         description="Get review count for period",
         params_model=FeedbacksCountParams,
@@ -1416,7 +1416,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedbacks", "count"],
     ),
     Action(
-        id="wb_feedbacks",
+        id="feedbacks",
         domain="communications",
         description="Get reviews list",
         params_model=FeedbacksParams,
@@ -1424,7 +1424,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedbacks", "отзывы"],
     ),
     Action(
-        id="wb_feedback_answer",
+        id="feedback-answer",
         domain="communications",
         description="Answer review",
         params_model=FeedbackAnswerParams,
@@ -1432,7 +1432,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "answer", "ответ"],
     ),
     Action(
-        id="wb_feedback_answer_edit",
+        id="feedback-answer-edit",
         domain="communications",
         description="Edit review answer",
         params_model=FeedbackAnswerParams,
@@ -1440,7 +1440,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "answer", "edit"],
     ),
     Action(
-        id="wb_feedback_return",
+        id="feedback-return",
         domain="communications",
         description="Request return for review",
         params_model=FeedbackIdParams,
@@ -1448,7 +1448,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "return", "возврат"],
     ),
     Action(
-        id="wb_feedback",
+        id="feedback",
         domain="communications",
         description="Get individual review",
         params_model=FeedbackIdParams,
@@ -1456,7 +1456,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "отзыв"],
     ),
     Action(
-        id="wb_feedbacks_archive",
+        id="feedbacks-archive",
         domain="communications",
         description="Get archived reviews",
         params_model=FeedbacksArchiveParams,
@@ -1464,7 +1464,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedbacks", "archive"],
     ),
     Action(
-        id="wb_feedback_pins",
+        id="feedback-pins",
         domain="communications",
         description="Get pinned reviews for product",
         params_model=NmIdParams,
@@ -1472,7 +1472,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "pins"],
     ),
     Action(
-        id="wb_feedback_pin",
+        id="feedback-pin",
         domain="communications",
         description="Pin review",
         params_model=FeedbackPinParams,
@@ -1480,7 +1480,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "pin"],
     ),
     Action(
-        id="wb_feedback_unpin",
+        id="feedback-unpin",
         domain="communications",
         description="Unpin review",
         params_model=FeedbackPinParams,
@@ -1488,7 +1488,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "unpin"],
     ),
     Action(
-        id="wb_feedback_pins_count",
+        id="feedback-pins-count",
         domain="communications",
         description="Get pinned review count",
         params_model=NmIdParams,
@@ -1496,7 +1496,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "pins", "count"],
     ),
     Action(
-        id="wb_feedback_pins_limits",
+        id="feedback-pins-limits",
         domain="communications",
         description="Get pinning limits",
         params_model=None,
@@ -1504,7 +1504,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["feedback", "pins", "limits"],
     ),
     Action(
-        id="wb_chats",
+        id="chats",
         domain="communications",
         description="Get chats list",
         params_model=None,
@@ -1512,7 +1512,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["chats", "чаты"],
     ),
     Action(
-        id="wb_chat_events",
+        id="chat-events",
         domain="communications",
         description="Get chat events",
         params_model=None,
@@ -1520,7 +1520,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["chat", "events"],
     ),
     Action(
-        id="wb_chat_send",
+        id="chat-send",
         domain="communications",
         description="Send chat message",
         params_model=ChatSendParams,
@@ -1532,7 +1532,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: tariffs  (5 actions)
     # ======================================================================
     Action(
-        id="wb_tariff_commissions",
+        id="tariff-commissions",
         domain="tariffs",
         description="Get commission rates",
         params_model=None,
@@ -1540,7 +1540,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tariff", "commissions", "комиссии"],
     ),
     Action(
-        id="wb_tariff_box",
+        id="tariff-box",
         domain="tariffs",
         description="Get box delivery tariffs",
         params_model=TariffDateParams,
@@ -1548,7 +1548,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tariff", "box"],
     ),
     Action(
-        id="wb_tariff_pallet",
+        id="tariff-pallet",
         domain="tariffs",
         description="Get pallet tariffs",
         params_model=TariffDateParams,
@@ -1556,7 +1556,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tariff", "pallet"],
     ),
     Action(
-        id="wb_tariff_acceptance",
+        id="tariff-acceptance",
         domain="tariffs",
         description="Get acceptance coefficients",
         params_model=None,
@@ -1564,7 +1564,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["tariff", "acceptance"],
     ),
     Action(
-        id="wb_tariff_return",
+        id="tariff-return",
         domain="tariffs",
         description="Get return tariffs",
         params_model=None,
@@ -1576,7 +1576,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: analytics  (17 actions)
     # ======================================================================
     Action(
-        id="wb_analytics_sales_funnel",
+        id="analytics-sales-funnel",
         domain="analytics",
         description="Get product sales funnel",
         params_model=AnalyticsSalesFunnelParams,
@@ -1584,7 +1584,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "funnel", "воронка"],
     ),
     Action(
-        id="wb_analytics_sales_funnel_history",
+        id="analytics-sales-funnel-history",
         domain="analytics",
         description="Get sales funnel history",
         params_model=AnalyticsSalesFunnelHistoryParams,
@@ -1592,7 +1592,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "funnel", "history"],
     ),
     Action(
-        id="wb_analytics_sales_funnel_grouped",
+        id="analytics-sales-funnel-grouped",
         domain="analytics",
         description="Get grouped sales funnel",
         params_model=AnalyticsSalesFunnelGroupedParams,
@@ -1600,7 +1600,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "funnel", "grouped"],
     ),
     Action(
-        id="wb_analytics_search_report",
+        id="analytics-search-report",
         domain="analytics",
         description="Get search queries report",
         params_model=AnalyticsSearchReportParams,
@@ -1608,7 +1608,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "search", "report"],
     ),
     Action(
-        id="wb_analytics_search_groups",
+        id="analytics-search-groups",
         domain="analytics",
         description="Get search query groups",
         params_model=AnalyticsSearchGroupsParams,
@@ -1616,7 +1616,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "search", "groups"],
     ),
     Action(
-        id="wb_analytics_search_details",
+        id="analytics-search-details",
         domain="analytics",
         description="Get search query details",
         params_model=AnalyticsSearchDetailsParams,
@@ -1624,7 +1624,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "search", "details"],
     ),
     Action(
-        id="wb_analytics_search_texts",
+        id="analytics-search-texts",
         domain="analytics",
         description="Get search phrases for product",
         params_model=AnalyticsSearchTextsParams,
@@ -1632,7 +1632,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "search", "texts"],
     ),
     Action(
-        id="wb_analytics_search_orders",
+        id="analytics-search-orders",
         domain="analytics",
         description="Get orders by search phrase",
         params_model=AnalyticsSearchOrdersParams,
@@ -1640,7 +1640,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "search", "orders"],
     ),
     Action(
-        id="wb_analytics_stocks_wb",
+        id="analytics-stocks-wb",
         domain="analytics",
         description="Get WB warehouse stock data",
         params_model=AnalyticsStocksWbParams,
@@ -1648,7 +1648,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "stocks", "wb"],
     ),
     Action(
-        id="wb_analytics_stocks_groups",
+        id="analytics-stocks-groups",
         domain="analytics",
         description="Get grouped inventory data",
         params_model=AnalyticsStocksGroupsParams,
@@ -1656,7 +1656,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "stocks", "groups"],
     ),
     Action(
-        id="wb_analytics_stocks_products",
+        id="analytics-stocks-products",
         domain="analytics",
         description="Get product inventory data",
         params_model=AnalyticsStocksProductsParams,
@@ -1664,7 +1664,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "stocks", "products"],
     ),
     Action(
-        id="wb_analytics_stocks_sizes",
+        id="analytics-stocks-sizes",
         domain="analytics",
         description="Get inventory by size",
         params_model=AnalyticsStocksSizesParams,
@@ -1672,7 +1672,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "stocks", "sizes"],
     ),
     Action(
-        id="wb_analytics_stocks_offices",
+        id="analytics-stocks-offices",
         domain="analytics",
         description="Get warehouse inventory data",
         params_model=AnalyticsStocksOfficesParams,
@@ -1680,7 +1680,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "stocks", "offices"],
     ),
     Action(
-        id="wb_analytics_csv_create",
+        id="analytics-csv-create",
         domain="analytics",
         description="Create analytics CSV report",
         params_model=AnalyticsCsvCreateParams,
@@ -1688,7 +1688,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "csv", "create"],
     ),
     Action(
-        id="wb_analytics_csv_list",
+        id="analytics-csv-list",
         domain="analytics",
         description="Get list of analytics CSV reports",
         params_model=None,
@@ -1696,7 +1696,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "csv", "list"],
     ),
     Action(
-        id="wb_analytics_csv_retry",
+        id="analytics-csv-retry",
         domain="analytics",
         description="Retry CSV report generation",
         params_model=AnalyticsCsvRetryParams,
@@ -1704,7 +1704,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["analytics", "csv", "retry"],
     ),
     Action(
-        id="wb_analytics_csv_download",
+        id="analytics-csv-download",
         domain="analytics",
         description="Download analytics CSV report",
         params_model=DownloadIdParams,
@@ -1717,7 +1717,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: reports  (24 actions)
     # ======================================================================
     Action(
-        id="wb_report_orders",
+        id="report-orders",
         domain="reports",
         description="Get orders report",
         params_model=ReportOrdersParams,
@@ -1725,7 +1725,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "orders", "заказы"],
     ),
     Action(
-        id="wb_report_sales",
+        id="report-sales",
         domain="reports",
         description="Get sales report",
         params_model=ReportOrdersParams,
@@ -1733,7 +1733,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "sales", "продажи"],
     ),
     Action(
-        id="wb_report_warehouse_remains_create",
+        id="report-warehouse-remains-create",
         domain="reports",
         description="Create warehouse remains report task",
         params_model=None,
@@ -1741,7 +1741,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "warehouse", "remains", "create"],
     ),
     Action(
-        id="wb_report_warehouse_remains_status",
+        id="report-warehouse-remains-status",
         domain="reports",
         description="Check warehouse remains report status",
         params_model=TaskIdParams,
@@ -1749,7 +1749,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "warehouse", "remains", "status"],
     ),
     Action(
-        id="wb_report_warehouse_remains_download",
+        id="report-warehouse-remains-download",
         domain="reports",
         description="Download warehouse remains report",
         params_model=TaskIdParams,
@@ -1758,7 +1758,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "warehouse", "remains", "download"],
     ),
     Action(
-        id="wb_report_excise",
+        id="report-excise",
         domain="reports",
         description="Get excise/marking report",
         params_model=ReportExciseParams,
@@ -1766,7 +1766,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "excise", "маркировка"],
     ),
     Action(
-        id="wb_report_measurement_penalties",
+        id="report-measurement-penalties",
         domain="reports",
         description="Get dimension measurement deductions",
         params_model=None,
@@ -1774,7 +1774,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "measurement"],
     ),
     Action(
-        id="wb_report_warehouse_measurements",
+        id="report-warehouse-measurements",
         domain="reports",
         description="Get warehouse measurement data",
         params_model=None,
@@ -1782,7 +1782,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "warehouse", "measurements"],
     ),
     Action(
-        id="wb_report_deductions",
+        id="report-deductions",
         domain="reports",
         description="Get substitution deductions",
         params_model=None,
@@ -1790,7 +1790,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "deductions", "удержания"],
     ),
     Action(
-        id="wb_report_antifraud",
+        id="report-antifraud",
         domain="reports",
         description="Get self-purchase deductions",
         params_model=None,
@@ -1798,7 +1798,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "antifraud", "самовыкуп"],
     ),
     Action(
-        id="wb_report_labeling",
+        id="report-labeling",
         domain="reports",
         description="Get marking penalties",
         params_model=None,
@@ -1806,7 +1806,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "labeling", "маркировка"],
     ),
     Action(
-        id="wb_report_acceptance_create",
+        id="report-acceptance-create",
         domain="reports",
         description="Create acceptance report task",
         params_model=None,
@@ -1814,7 +1814,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "acceptance", "create"],
     ),
     Action(
-        id="wb_report_acceptance_status",
+        id="report-acceptance-status",
         domain="reports",
         description="Check acceptance report status",
         params_model=TaskIdParams,
@@ -1822,7 +1822,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "acceptance", "status"],
     ),
     Action(
-        id="wb_report_acceptance_download",
+        id="report-acceptance-download",
         domain="reports",
         description="Download acceptance report",
         params_model=TaskIdParams,
@@ -1831,7 +1831,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "acceptance", "download"],
     ),
     Action(
-        id="wb_report_paid_storage_create",
+        id="report-paid-storage-create",
         domain="reports",
         description="Create paid storage report task",
         params_model=None,
@@ -1839,7 +1839,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "storage", "create"],
     ),
     Action(
-        id="wb_report_paid_storage_status",
+        id="report-paid-storage-status",
         domain="reports",
         description="Check paid storage report status",
         params_model=TaskIdParams,
@@ -1847,7 +1847,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "storage", "status"],
     ),
     Action(
-        id="wb_report_paid_storage_download",
+        id="report-paid-storage-download",
         domain="reports",
         description="Download paid storage report",
         params_model=TaskIdParams,
@@ -1856,7 +1856,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "storage", "download"],
     ),
     Action(
-        id="wb_report_regional_sales",
+        id="report-regional-sales",
         domain="reports",
         description="Get regional sales report",
         params_model=None,
@@ -1864,7 +1864,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "regional", "sales"],
     ),
     Action(
-        id="wb_report_brands",
+        id="report-brands",
         domain="reports",
         description="Get seller brands",
         params_model=None,
@@ -1872,7 +1872,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "brands"],
     ),
     Action(
-        id="wb_report_brand_categories",
+        id="report-brand-categories",
         domain="reports",
         description="Get brand categories",
         params_model=None,
@@ -1880,7 +1880,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "brand", "categories"],
     ),
     Action(
-        id="wb_report_brand_share",
+        id="report-brand-share",
         domain="reports",
         description="Get brand share report",
         params_model=ReportBrandShareParams,
@@ -1888,7 +1888,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "brand", "share"],
     ),
     Action(
-        id="wb_report_blocked_products",
+        id="report-blocked-products",
         domain="reports",
         description="Get blocked products",
         params_model=None,
@@ -1896,7 +1896,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "blocked"],
     ),
     Action(
-        id="wb_report_shadowed_products",
+        id="report-shadowed-products",
         domain="reports",
         description="Get shadowed products",
         params_model=None,
@@ -1904,7 +1904,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["report", "shadowed"],
     ),
     Action(
-        id="wb_report_returns",
+        id="report-returns",
         domain="reports",
         description="Get returns report",
         params_model=None,
@@ -1916,7 +1916,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: finance  (12 actions)
     # ======================================================================
     Action(
-        id="wb_finance_balance",
+        id="finance-balance",
         domain="finance",
         description="Get seller account balance",
         params_model=None,
@@ -1924,7 +1924,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "balance", "баланс"],
     ),
     Action(
-        id="wb_finance_sales_reports",
+        id="finance-sales-reports",
         domain="finance",
         description="Get sales reports list",
         params_model=FinanceSalesReportsListParams,
@@ -1932,7 +1932,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "sales", "reports"],
     ),
     Action(
-        id="wb_finance_sales_report_detail",
+        id="finance-sales-report-detail",
         domain="finance",
         description="Get detailed sales report",
         params_model=ReportIdParams,
@@ -1940,7 +1940,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "sales", "detail"],
     ),
     Action(
-        id="wb_finance_sales_report_by_period",
+        id="finance-sales-report-by-period",
         domain="finance",
         description="Get sales report for period",
         params_model=FinanceSalesReportByPeriodParams,
@@ -1948,7 +1948,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "sales", "period"],
     ),
     Action(
-        id="wb_finance_report_detail_by_period",
+        id="finance-report-detail-by-period",
         domain="finance",
         description="Get realization report",
         params_model=FinanceReportDetailParams,
@@ -1956,7 +1956,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "report", "realization"],
     ),
     Action(
-        id="wb_finance_acquiring_reports",
+        id="finance-acquiring-reports",
         domain="finance",
         description="Get acquiring reports",
         params_model=FinanceAcquiringReportsListParams,
@@ -1964,7 +1964,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "acquiring"],
     ),
     Action(
-        id="wb_finance_acquiring_detail",
+        id="finance-acquiring-detail",
         domain="finance",
         description="Get detailed acquiring report",
         params_model=ReportIdParams,
@@ -1972,7 +1972,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "acquiring", "detail"],
     ),
     Action(
-        id="wb_finance_acquiring_by_period",
+        id="finance-acquiring-by-period",
         domain="finance",
         description="Get acquiring for period",
         params_model=FinanceAcquiringByPeriodParams,
@@ -1980,7 +1980,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "acquiring", "period"],
     ),
     Action(
-        id="wb_finance_document_categories",
+        id="finance-document-categories",
         domain="finance",
         description="Get document categories",
         params_model=None,
@@ -1988,7 +1988,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "documents", "categories"],
     ),
     Action(
-        id="wb_finance_documents",
+        id="finance-documents",
         domain="finance",
         description="Get seller documents list",
         params_model=FinanceDocumentsListParams,
@@ -1996,7 +1996,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "documents"],
     ),
     Action(
-        id="wb_finance_document_download",
+        id="finance-document-download",
         domain="finance",
         description="Download document",
         params_model=DocIdParams,
@@ -2005,7 +2005,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["finance", "document", "download"],
     ),
     Action(
-        id="wb_finance_documents_download",
+        id="finance-documents-download",
         domain="finance",
         description="Download multiple documents",
         params_model=DocIdsParams,
@@ -2018,7 +2018,7 @@ _ACTIONS_LIST: list[Action] = [
     # Domain: wbd  (12 actions)
     # ======================================================================
     Action(
-        id="wb_wbd_keys_add",
+        id="wbd-keys-add",
         domain="wbd",
         description="Add activation keys",
         params_model=WbdKeysParams,
@@ -2026,7 +2026,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "keys", "add"],
     ),
     Action(
-        id="wb_wbd_keys_delete",
+        id="wbd-keys-delete",
         domain="wbd",
         description="Delete activation keys",
         params_model=WbdKeysParams,
@@ -2035,7 +2035,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "keys", "delete"],
     ),
     Action(
-        id="wb_wbd_keys_redeemed",
+        id="wbd-keys-redeemed",
         domain="wbd",
         description="Get redeemed keys",
         params_model=WbdOfferIdParams,
@@ -2043,7 +2043,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "keys", "redeemed"],
     ),
     Action(
-        id="wb_wbd_keys_count",
+        id="wbd-keys-count",
         domain="wbd",
         description="Get key count",
         params_model=WbdOfferIdParams,
@@ -2051,7 +2051,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "keys", "count"],
     ),
     Action(
-        id="wb_wbd_keys_list",
+        id="wbd-keys-list",
         domain="wbd",
         description="Get keys list",
         params_model=WbdOfferIdParams,
@@ -2059,7 +2059,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "keys", "list"],
     ),
     Action(
-        id="wb_wbd_offer_create",
+        id="wbd-offer-create",
         domain="wbd",
         description="Create digital offer",
         params_model=PassThroughParams,
@@ -2067,7 +2067,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "offer", "create"],
     ),
     Action(
-        id="wb_wbd_offer_update",
+        id="wbd-offer-update",
         domain="wbd",
         description="Update digital offer",
         params_model=WbdOfferUpdateParams,
@@ -2075,7 +2075,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "offer", "update"],
     ),
     Action(
-        id="wb_wbd_offer",
+        id="wbd-offer",
         domain="wbd",
         description="Get digital offer info",
         params_model=WbdOfferIdParams,
@@ -2083,7 +2083,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "offer"],
     ),
     Action(
-        id="wb_wbd_offers",
+        id="wbd-offers",
         domain="wbd",
         description="Get digital offers list",
         params_model=None,
@@ -2091,7 +2091,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "offers"],
     ),
     Action(
-        id="wb_wbd_offer_price",
+        id="wbd-offer-price",
         domain="wbd",
         description="Update digital offer price",
         params_model=WbdOfferPriceParams,
@@ -2099,7 +2099,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "offer", "price"],
     ),
     Action(
-        id="wb_wbd_offer_status",
+        id="wbd-offer-status",
         domain="wbd",
         description="Update digital offer status",
         params_model=WbdOfferStatusParams,
@@ -2107,7 +2107,7 @@ _ACTIONS_LIST: list[Action] = [
         keywords=["wbd", "offer", "status"],
     ),
     Action(
-        id="wb_wbd_catalog",
+        id="wbd-catalog",
         domain="wbd",
         description="Get WBD catalog",
         params_model=None,

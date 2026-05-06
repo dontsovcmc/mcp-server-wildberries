@@ -22,7 +22,7 @@ async def test_search_returns_results():
         assert not r.isError
         results = json.loads(r.content[0].text)
         assert len(results) > 0
-        assert results[0]["id"] == "wb_fbs_order_cancel"
+        assert results[0]["id"] == "fbs-order-cancel"
 
 
 @pytest.mark.anyio
@@ -37,7 +37,7 @@ async def test_search_with_domain_filter():
 @pytest.mark.anyio
 async def test_search_returns_params_schema():
     async with create_connected_server_and_client_session(mcp._mcp_server) as s:
-        r = await s.call_tool("wb_search", {"query": "wb_fbs_order_cancel"})
+        r = await s.call_tool("wb_search", {"query": "fbs-order-cancel"})
         results = json.loads(r.content[0].text)
         top = results[0]
         assert "params_schema" in top
@@ -74,7 +74,7 @@ async def test_search_file_actions():
 @pytest.mark.anyio
 async def test_search_destructive_flag():
     async with create_connected_server_and_client_session(mcp._mcp_server) as s:
-        r = await s.call_tool("wb_search", {"query": "wb_fbs_order_cancel"})
+        r = await s.call_tool("wb_search", {"query": "fbs-order-cancel"})
         results = json.loads(r.content[0].text)
         assert results[0]["is_destructive"] is True
 
@@ -88,7 +88,7 @@ async def test_execute_ping():
         M.return_value.ping.return_value = {"status": "ok"}
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             r = await s.call_tool("wb_execute", {
-                "action": "wb_ping",
+                "action": "ping",
                 "params_json": "{}",
             })
             assert not r.isError
@@ -102,7 +102,7 @@ async def test_execute_seller_info():
         M.return_value.get_seller_info.return_value = {"name": "Test", "sid": "123"}
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             r = await s.call_tool("wb_execute", {
-                "action": "wb_seller_info",
+                "action": "seller-info",
                 "params_json": "{}",
             })
             assert not r.isError
@@ -119,7 +119,7 @@ async def test_execute_fbs_order_cancel():
         M.return_value.cancel_fbs_order.return_value = {}
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             r = await s.call_tool("wb_execute", {
-                "action": "wb_fbs_order_cancel",
+                "action": "fbs-order-cancel",
                 "params_json": '{"order_id": 12345}',
             })
             assert not r.isError
@@ -132,7 +132,7 @@ async def test_execute_fbs_orders_status():
         M.return_value.get_fbs_orders_status.return_value = {"orders": []}
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             r = await s.call_tool("wb_execute", {
-                "action": "wb_fbs_orders_status",
+                "action": "fbs-orders-status",
                 "params_json": '{"order_ids": [1, 2, 3]}',
             })
             assert not r.isError
@@ -145,7 +145,7 @@ async def test_execute_content_subjects():
         M.return_value.get_subjects.return_value = {"data": []}
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             r = await s.call_tool("wb_execute", {
-                "action": "wb_content_subjects",
+                "action": "content-subjects",
                 "params_json": '{"name": "обувь", "top": 10}',
             })
             assert not r.isError
@@ -158,7 +158,7 @@ async def test_execute_advert_campaign_rename():
         M.return_value.rename_advert_campaign.return_value = {}
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             r = await s.call_tool("wb_execute", {
-                "action": "wb_advert_campaign_rename",
+                "action": "advert-campaign-rename",
                 "params_json": '{"campaign_id": 100, "name": "New Name"}',
             })
             assert not r.isError
@@ -171,7 +171,7 @@ async def test_execute_analytics_sales_funnel():
         M.return_value.get_analytics_sales_funnel.return_value = {"data": []}
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             r = await s.call_tool("wb_execute", {
-                "action": "wb_analytics_sales_funnel",
+                "action": "analytics-sales-funnel",
                 "params_json": '{"selectedPeriod": {"start": "2025-01-01", "end": "2025-01-31"}}',
             })
             assert not r.isError
@@ -196,7 +196,7 @@ async def test_execute_unknown_action():
 async def test_execute_file_action_via_execute():
     async with create_connected_server_and_client_session(mcp._mcp_server) as s:
         r = await s.call_tool("wb_execute", {
-            "action": "wb_analytics_csv_download",
+            "action": "analytics-csv-download",
             "params_json": '{"download_id": "test"}',
         })
         data = json.loads(r.content[0].text)
@@ -214,7 +214,7 @@ async def test_execute_file_download(tmp_path):
         async with create_connected_server_and_client_session(mcp._mcp_server) as s:
             out = str(tmp_path / "report.csv")
             r = await s.call_tool("wb_execute_file", {
-                "action": "wb_analytics_csv_download",
+                "action": "analytics-csv-download",
                 "file_path": out,
                 "params_json": '{"download_id": "dl123"}',
             })
@@ -228,7 +228,7 @@ async def test_execute_file_download(tmp_path):
 async def test_execute_file_non_file_action():
     async with create_connected_server_and_client_session(mcp._mcp_server) as s:
         r = await s.call_tool("wb_execute_file", {
-            "action": "wb_ping",
+            "action": "ping",
             "file_path": "/tmp/test.bin",
             "params_json": "{}",
         })
