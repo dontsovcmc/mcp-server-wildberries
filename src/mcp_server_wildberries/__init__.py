@@ -2,7 +2,7 @@
 
 import sys
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 def main():
@@ -11,9 +11,12 @@ def main():
         cli_main()
     elif "--version" in sys.argv:
         print(f"mcp-server-wildberries {__version__}")
-    else:
+    elif len(sys.argv) == 1:
         from .server import mcp
         mcp.run(transport="stdio")
+    else:
+        from .cli import main as cli_main
+        cli_main()
 
 
 if __name__ == "__main__":
