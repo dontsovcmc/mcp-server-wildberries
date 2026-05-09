@@ -3,15 +3,9 @@
 import json
 import logging
 import os
-import sys
 
 from mcp.server.fastmcp import FastMCP
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-    stream=sys.stderr,
-)
 log = logging.getLogger(__name__)
 
 mcp = FastMCP(
@@ -65,7 +59,7 @@ def _safe_output_path(path: str) -> str:
     home = os.path.realpath(os.path.expanduser("~"))
     tmp = os.path.realpath(tempfile.gettempdir())
 
-    if not (real.startswith(home + os.sep) or real.startswith(tmp + os.sep) or real.startswith(tmp)):
+    if not (real.startswith(home + os.sep) or real.startswith(tmp + os.sep) or real == tmp):
         raise RuntimeError(f"Path not allowed: {path}. Only home directory or temp allowed.")
 
     if real.startswith(home + os.sep):

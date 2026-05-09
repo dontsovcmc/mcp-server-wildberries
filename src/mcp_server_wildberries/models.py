@@ -42,12 +42,11 @@ class TaskIdParams(BaseModel):
     task_id: str = Field(..., description="Report task ID returned by the create-report action")
 
 
-class PassThroughParams(BaseModel):
-    """Generic pass-through params for complex API calls.
+class WbdOfferCreateParams(BaseModel):
+    """Parameters for creating a WBD digital offer.
 
-    Any additional fields are forwarded as-is to the Wildberries API.
-    Used for analytics, advertising, and other endpoints with large
-    or frequently changing request schemas.
+    All fields are forwarded as-is to the WB API POST /api/v1/offers.
+    See https://openapi.wildberries.ru/ for the offer creation schema.
     """
 
     model_config = ConfigDict(extra="allow")

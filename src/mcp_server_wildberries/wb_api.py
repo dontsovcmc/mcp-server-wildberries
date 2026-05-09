@@ -1,15 +1,9 @@
 """HTTP client for Wildberries Seller API."""
 
 import logging
-import sys
 
 import requests
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s %(message)s",
-    stream=sys.stderr,
-)
 log = logging.getLogger(__name__)
 
 BASES = {
