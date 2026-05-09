@@ -20,7 +20,7 @@ from .models import (
     SupplyIdParams,
     CampaignIdParams,
     TaskIdParams,
-    PassThroughParams,
+    WbdOfferCreateParams,
     # Content
     SubjectIdParams,
     SubjectsListParams,
@@ -2062,7 +2062,7 @@ _ACTIONS_LIST: list[Action] = [
         id="wbd-offer-create",
         domain="wbd",
         description="Create digital offer",
-        params_model=PassThroughParams,
+        params_model=WbdOfferCreateParams,
         api_method="create_wbd_offer",
         keywords=["wbd", "offer", "create"],
     ),
