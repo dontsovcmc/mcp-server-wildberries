@@ -1,5 +1,7 @@
 # mcp-server-wildberries
 
+[![Version](https://img.shields.io/badge/version-0.2.1-blue)](https://github.com/dontsovcmc/mcp-server-wildberries)
+
 mcp-name: io.github.dontsovcmc/wildberries
 
 MCP-сервер для **Wildberries Seller API** — товары, заказы, поставки, аналитика, реклама, финансы.
@@ -235,10 +237,28 @@ $ WB_TOKEN=ваш-токен mcp-server-wildberries seller-info
 {"name": "ИП Иванов И.И.", "sid": "...", "tradeMark": "MyBrand"}
 ```
 
+## Pydantic-модели
+
+Модели параметров доступны как отдельная библиотека для использования в своих Python-программах:
+
+```bash
+pip install mcp-server-wildberries
+```
+
+```python
+from mcp_server_wildberries.models import FbsOrdersParams, SubjectsListParams
+
+params = FbsOrdersParams(date_from="2025-01-01", limit=50)
+# params.model_dump() → {"date_from": "2025-01-01", "date_to": "", "limit": 50, ...}
+```
+
+62 Pydantic-модели покрывают параметры всех 235 действий. Полный список — в [`src/mcp_server_wildberries/models.py`](src/mcp_server_wildberries/models.py).
+
 ## Разработка
 
 ```bash
 pip install -e ".[test]"
+ruff check src/ tests/
 pytest tests/ -v
 ```
 
